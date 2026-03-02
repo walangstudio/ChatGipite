@@ -1,0 +1,157 @@
+{
+  "tools": [
+    {
+      "name": "biz_generate",
+      "description": "Generate 3-5 business ideas based on optional sector, problem statement, or constraints. Returns structured idea briefs with problem/solution/target/hooks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sector": { "type": "string", "description": "Industry or sector (e.g. healthtech, edtech, fintech, SaaS, consumer)" },
+          "problem": { "type": "string", "description": "A problem or pain point to build around" },
+          "constraints": { "type": "string", "description": "Constraints like budget, solo founder, B2B only, no-code, etc." }
+        }
+      }
+    },
+    {
+      "name": "biz_validate",
+      "description": "Run a full viability analysis on a given idea: problem clarity, ICP, solution fit, revenue model options, market size estimate, and ICE score.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "description": "The business idea to validate" },
+          "context": { "type": "string", "description": "Additional context about the idea, target market, or constraints" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_ice_score",
+      "description": "Compute an ICE score (Impact 1-10, Confidence 1-10, Ease 1-10) for a business idea with rationale for each dimension.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "description": "The business idea to score" },
+          "context": { "type": "string", "description": "Additional context" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_canvas",
+      "description": "Generate a complete Business Model Canvas (all 9 blocks) for a saved idea slug.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea (e.g. ai-meal-planning)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_pitchdeck",
+      "description": "Generate a 10-slide pitch deck (Problem, Solution, Market, Product, Business Model, Traction, Competition, Team, Financials, Ask) for a saved idea.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_name",
+      "description": "Generate business name options for an idea with branding score (memorability, pronounceability, uniqueness).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "style": { "type": "string", "description": "Naming style: coined, descriptive, metaphor, acronym, portmanteau" },
+          "count": { "type": "number", "description": "Number of names to generate (default: 8)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_name_check",
+      "description": "Check availability of a business name: .com domain (DNS), Twitter/X handle, Instagram handle, LinkedIn company page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Business name to check (e.g. NutriAI, Validea)" }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "biz_competitors",
+      "description": "List direct and indirect competitors for an idea, analyze their strengths/weaknesses, and identify differentiation opportunities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_financials",
+      "description": "Model unit economics, CAC/LTV ratio, gross margin, break-even timeline, and 12-month P&L projection.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "assumptions": {
+            "type": "object",
+            "description": "Override assumptions",
+            "properties": {
+              "price_per_user": { "type": "number" },
+              "monthly_churn_pct": { "type": "number" },
+              "cac_estimate": { "type": "number" },
+              "initial_users": { "type": "number" },
+              "monthly_growth_pct": { "type": "number" }
+            }
+          }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_playbook",
+      "description": "Generate a 30/60/90-day execution playbook with milestones, KPIs, resource requirements, and risk flags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_full_run",
+      "description": "Run the full end-to-end analysis pipeline: validate → canvas → competitors → financials → names → playbook. Saves all artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_recall",
+      "description": "Full-text search across all stored ideas, analyses, and artifacts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search query" },
+          "limit": { "type": "number", "description": "Max results (default: 10)" },
+          "type": { "type": "string", "description": "Filter by type: ideas, validations, financials, playbooks, names" }
+        },
+        "required": ["query"]
+      }
+    }
+  ]
+}

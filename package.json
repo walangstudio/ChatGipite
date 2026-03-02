@@ -1,0 +1,23 @@
+{
+  "name": "chatgipite",
+  "version": "1.0.0",
+  "description": "ChatGipite by Lugitech: business idea generation, validation, and execution planning. MCP stdio server compatible with Claude, Cursor, Zed, Windsurf, Continue.dev, and any MCP-capable client.",
+  "main": "server.js",
+  "type": "module",
+  "bin": {
+    "chatgipite": "./server.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^9.4.3",
+    "js-yaml": "^4.1.0",
+    "whois": "^2.14.1"
+  }
+}

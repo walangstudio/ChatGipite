@@ -11,7 +11,7 @@ rem ── Defaults ────────────────────
 set "FORCE=false"
 set "UNINSTALL=false"
 set "UPDATE=false"
-set "CLIENT=desktop"
+set "CLIENT=claudedesktop"
 set "SKIP_TEST=false"
 set "GLOBAL_CONFIG=false"
 set "CLIENT_EXPLICIT=false"
@@ -23,20 +23,20 @@ rem ═════════════════════════�
 echo Usage: install.bat [options]
 echo.
 echo Options:
-echo   -c, --client TYPE   MCP client: desktop, code, kilo, opencode, goose, all (default: desktop)
+echo   -c, --client TYPE   MCP client: claudedesktop, claude, kilo, opencode, goose, all (default: claudedesktop)
 echo   -f, --force         Skip prompts, overwrite existing config
 echo   -u, --uninstall     Remove ChatGipite from MCP client config
 echo       --upgrade       Re-run npm install and update MCP config paths
 echo       --update        Alias for --upgrade
-echo       --global        Write to global config path (applies to: code, opencode, all)
+echo       --global        Write to global config path (applies to: claude, opencode, all)
 echo                       Default (no --global): writes to parent workspace dir
 echo       --skip-test     Skip server validation
 echo   -h, --help          Show this help
 echo.
 echo Examples:
 echo   install.bat                      Install for Claude Desktop
-echo   install.bat -c code              Install for Claude Code (workspace-local)
-echo   install.bat -c code --global     Install for Claude Code (global config)
+echo   install.bat -c claude              Install for Claude Code (workspace-local)
+echo   install.bat -c claude --global     Install for Claude Code (global config)
 echo   install.bat -c kilo              Install for Kilo Code
 echo   install.bat -c opencode          Install for OpenCode (workspace-local)
 echo   install.bat -c opencode --global Install for OpenCode (global)
@@ -107,10 +107,10 @@ rem ═════════════════════════�
 
 rem ── Validate --global ─────────────────────────────────
 if "!GLOBAL_CONFIG!"=="true" (
-    if not "!CLIENT!"=="code" (
+    if not "!CLIENT!"=="claude" (
         if not "!CLIENT!"=="opencode" (
             if not "!CLIENT!"=="all" (
-                echo   ERROR: --global is only valid with -c code, opencode, or all >&2
+                echo   ERROR: --global is only valid with -c claude, opencode, or all >&2
                 exit /b 1
             )
         )
@@ -120,7 +120,8 @@ if "!GLOBAL_CONFIG!"=="true" (
 rem ── Read version ──────────────────────────────────────
 set "VERSION=unknown"
 set "_PY_VER=%TEMP%\chatgipite_ver.js"
-echo try{const p=require('!APP_DIR!\package.json');process.stdout.write(p.version);}catch{process.stdout.write('unknown');} > "!_PY_VER!"
+set "_APP_FWD=!APP_DIR:\=/!"
+echo try{const p=require('!_APP_FWD!/package.json');process.stdout.write(p.version);}catch{process.stdout.write('unknown');} > "!_PY_VER!"
 for /f "usebackq delims=" %%V in (`node "!_PY_VER!" 2^>nul`) do set "VERSION=%%V"
 del /f /q "!_PY_VER!" 2>nul
 
@@ -134,11 +135,7 @@ rem ── Config paths ──────────────────�
 set "DESKTOP_CONFIG=!APPDATA!\Claude\claude_desktop_config.json"
 
 if "!GLOBAL_CONFIG!"=="true" (
-    if exist "!USERPROFILE!\.claude\mcp.json" (
-        set "CODE_CONFIG=!USERPROFILE!\.claude\mcp.json"
-    ) else (
-        set "CODE_CONFIG=!USERPROFILE!\.claude.json"
-    )
+    set "CODE_CONFIG=!USERPROFILE!\.claude.json"
 ) else (
     for %%I in ("!APP_DIR!") do set "_PARENT=%%~dpI"
     if "!_PARENT:~-1!"=="\" set "_PARENT=!_PARENT:~0,-1!"
@@ -209,7 +206,7 @@ rem ═════════════════════════�
 echo.
 echo   ChatGipite by Lugitech  v!VERSION!
 echo   Ang Chat bot ng mga Gipit
-echo   ─────────────────────────────────────
+echo   -------------------------------------
 
 rem ── Node check ──────────────────────────────────────
 set "NODE_BIN="
@@ -237,7 +234,7 @@ if "!UNINSTALL!"=="true" (
     echo.
     echo   Uninstalling ChatGipite...
     if "!CLIENT!"=="all" (
-        for %%C in (desktop code kilo opencode goose) do call :uninstall_client %%C
+        for %%C in (claudedesktop claude kilo opencode goose) do call :uninstall_client %%C
     ) else (
         call :uninstall_client !CLIENT!
     )
@@ -252,9 +249,11 @@ if not "!INSTALLED_VERSION!"=="" (
     if "!INSTALLED_VERSION!"=="!VERSION!" (
         if "!FORCE!"=="false" (
             if "!UPDATE!"=="false" (
-                echo.
-                echo   Already installed v!INSTALLED_VERSION!. Use --upgrade to reinstall.
-                goto :cleanup
+                if "!CLIENT_EXPLICIT!"=="false" (
+                    echo.
+                    echo   Already installed v!INSTALLED_VERSION!. Use --upgrade to reinstall.
+                    goto :cleanup
+                )
             )
         )
     ) else (
@@ -284,7 +283,7 @@ rem ── Register with MCP client(s) ─────────────�
 echo.
 echo   Configuring MCP client: !CLIENT!
 if "!CLIENT!"=="all" (
-    for %%C in (desktop code kilo opencode goose) do call :install_client %%C
+    for %%C in (claudedesktop claude kilo opencode goose) do call :install_client %%C
 ) else (
     call :install_client !CLIENT!
 )
@@ -293,7 +292,7 @@ rem ── Write marker ──────────────────�
 echo !VERSION!> "!APP_DIR!\!MARKER_FILE!"
 
 echo.
-echo   ─────────────────────────────────────
+echo   -------------------------------------
 echo   OK: ChatGipite v!VERSION! installed.
 echo.
 echo   Next steps:
@@ -306,14 +305,14 @@ goto :cleanup
 rem ════════════════════════════════════════════════════════
 :install_client
 set "_C=%~1"
-if /i "!_C!"=="desktop" (
+if /i "!_C!"=="claudedesktop" (
     echo   Registering with Claude Desktop: !DESKTOP_CONFIG!
     call :backup_config "!DESKTOP_CONFIG!"
     node "!JS_MERGE!" "!DESKTOP_CONFIG!" "!SERVER_JS!"
     echo   OK: Claude Desktop configured
     goto :eof
 )
-if /i "!_C!"=="code" (
+if /i "!_C!"=="claude" (
     echo   Registering with Claude Code: !CODE_CONFIG!
     call :backup_config "!CODE_CONFIG!"
     node "!JS_MERGE!" "!CODE_CONFIG!" "!SERVER_JS!"
@@ -346,11 +345,11 @@ goto :eof
 rem ════════════════════════════════════════════════════════
 :uninstall_client
 set "_C=%~1"
-if /i "!_C!"=="desktop" (
+if /i "!_C!"=="claudedesktop" (
     echo   Removing from Claude Desktop
     node "!JS_REMOVE!" "!DESKTOP_CONFIG!" & goto :eof
 )
-if /i "!_C!"=="code" (
+if /i "!_C!"=="claude" (
     echo   Removing from Claude Code
     node "!JS_REMOVE!" "!CODE_CONFIG!" & goto :eof
 )

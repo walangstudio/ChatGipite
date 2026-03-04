@@ -11,7 +11,7 @@ SERVER_JS="$APP_DIR/server.js"
 FORCE=false
 UNINSTALL=false
 UPDATE=false
-CLIENT="desktop"
+CLIENT="claudedesktop"
 SKIP_TEST=false
 GLOBAL_CONFIG=false
 CLIENT_EXPLICIT=false
@@ -22,20 +22,20 @@ show_help() {
 Usage: ./install.sh [options]
 
 Options:
-  -c, --client TYPE   MCP client: desktop, code, kilo, opencode, goose, all (default: desktop)
+  -c, --client TYPE   MCP client: claudedesktop, claude, kilo, opencode, goose, all (default: claudedesktop)
   -f, --force         Skip prompts, overwrite existing config
   -u, --uninstall     Remove ChatGipite from MCP client config
       --upgrade       Re-run npm install and update MCP config paths
       --update        Alias for --upgrade
-      --global        Write to global config path (applies to: code, opencode, all)
+      --global        Write to global config path (applies to: claude, opencode, all)
                       Default (no --global): writes to parent workspace dir
       --skip-test     Skip server validation
   -h, --help          Show this help
 
 Examples:
   ./install.sh                      Install for Claude Desktop
-  ./install.sh -c code              Install for Claude Code (workspace-local)
-  ./install.sh -c code --global     Install for Claude Code (global config)
+  ./install.sh -c claude              Install for Claude Code (workspace-local)
+  ./install.sh -c claude --global     Install for Claude Code (global config)
   ./install.sh -c kilo              Install for Kilo Code (workspace-local)
   ./install.sh -c opencode          Install for OpenCode (workspace-local)
   ./install.sh -c opencode --global Install for OpenCode (global)
@@ -70,8 +70,8 @@ die()   { err "$*"; exit 1; }
 
 if [[ "$GLOBAL_CONFIG" == true ]]; then
     case "$CLIENT" in
-        code|opencode|all) ;;
-        *) die "--global is only valid with -c code, opencode, or all" ;;
+        claude|opencode|all) ;;
+        *) die "--global is only valid with -c claude, opencode, or all" ;;
     esac
 fi
 
@@ -121,12 +121,7 @@ get_desktop_config_path() {
 
 get_code_config_path() {
     if [[ "$GLOBAL_CONFIG" == true ]]; then
-        # Prefer ~/.claude/mcp.json if it exists, fall back to ~/.claude.json
-        if [[ -f "$HOME/.claude/mcp.json" ]]; then
-            echo "$HOME/.claude/mcp.json"
-        else
-            echo "$HOME/.claude.json"
-        fi
+        echo "$HOME/.claude.json"
     else
         echo "$(dirname "$APP_DIR")/.mcp.json"
     fi
@@ -280,13 +275,13 @@ remove_goose_config() {
 install_client() {
     local client="$1"
     case "$client" in
-        desktop)
+        claudedesktop)
             local cfg
             cfg=$(get_desktop_config_path)
             info "Registering with Claude Desktop: $cfg"
             merge_mcp_config "$cfg" "$SERVER_JS"
             ok "Claude Desktop configured" ;;
-        code)
+        claude)
             local cfg
             cfg=$(get_code_config_path)
             info "Registering with Claude Code: $cfg"
@@ -318,12 +313,12 @@ install_client() {
 uninstall_client() {
     local client="$1"
     case "$client" in
-        desktop)
+        claudedesktop)
             local cfg
             cfg=$(get_desktop_config_path)
             info "Removing from Claude Desktop: $cfg"
             remove_mcp_config "$cfg" ;;
-        code)
+        claude)
             local cfg
             cfg=$(get_code_config_path)
             info "Removing from Claude Code: $cfg"
@@ -366,7 +361,7 @@ if [[ "$UNINSTALL" == true ]]; then
     echo ""
     info "Uninstalling ChatGipite..."
     if [[ "$CLIENT" == "all" ]]; then
-        for c in desktop code kilo opencode goose; do uninstall_client "$c"; done
+        for c in claudedesktop claude kilo opencode goose; do uninstall_client "$c"; done
     else
         uninstall_client "$CLIENT"
     fi
@@ -377,7 +372,7 @@ if [[ "$UNINSTALL" == true ]]; then
 fi
 
 # ── Already installed check ──────────────────────────────
-if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" == "$VERSION" && "$FORCE" == false && "$UPDATE" == false ]]; then
+if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" == "$VERSION" && "$FORCE" == false && "$UPDATE" == false && "$CLIENT_EXPLICIT" == false ]]; then
     echo ""
     info "Already installed v${INSTALLED_VERSION}. Use --upgrade to reinstall or --force to overwrite."
     exit 0
@@ -406,7 +401,7 @@ fi
 echo ""
 info "Configuring MCP client: $CLIENT"
 if [[ "$CLIENT" == "all" ]]; then
-    for c in desktop code kilo opencode goose; do install_client "$c"; done
+    for c in claudedesktop claude kilo opencode goose; do install_client "$c"; done
 else
     install_client "$CLIENT"
 fi

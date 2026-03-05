@@ -23,8 +23,8 @@ Business idea generation, validation, and execution planning as an MCP tool serv
 
 ## Requirements
 
-- Node.js 18+
-- Anthropic API key (or Ollama for local use)
+- Node.js 20+ (Node 24 supported)
+- LLM API key (optional — Ollama works out of the box for fully local use)
 
 ## Install
 
@@ -57,11 +57,15 @@ For Cursor, Zed, Windsurf, and Continue.dev, see the manual config blocks in `CL
 
 ```bash
 npm install
-export ANTHROPIC_API_KEY=sk-ant-...
 node server.js
 ```
 
-For local/offline use, set `default_provider: ollama` in `config/providers.yaml`.
+No API key required for local use — set `default_provider: ollama` in `config/providers.yaml`.
+To use Anthropic/Claude, set the key in your environment or MCP client config:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
 
 ## Usage
 

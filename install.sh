@@ -168,21 +168,21 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
 
 remove_mcp_config() {
     local config_path="$1"
-    [[ -f "$config_path" ]] || return 0
+    [[ -f "$config_path" ]] || return 1
     cp "$config_path" "${config_path}.backup.$(date +%Y%m%d%H%M%S)"
 
     node -e "
 const fs = require('fs');
 const configPath = process.argv[1];
 let config = {};
-try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch { process.exit(0); }
+try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch { process.exit(1); }
 const servers = config.mcpServers || {};
 if ('chatgipite' in servers) {
     delete servers['chatgipite'];
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
-    console.log('  Removed chatgipite from config');
+    process.exit(0);
 } else {
-    console.log('  chatgipite not found in config');
+    process.exit(1);
 }
 " "$config_path"
 }
@@ -210,21 +210,21 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
 
 remove_opencode_config() {
     local config_path="$1"
-    [[ -f "$config_path" ]] || return 0
+    [[ -f "$config_path" ]] || return 1
     cp "$config_path" "${config_path}.backup.$(date +%Y%m%d%H%M%S)"
 
     node -e "
 const fs = require('fs');
 const configPath = process.argv[1];
 let config = {};
-try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch { process.exit(0); }
+try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch { process.exit(1); }
 const mcp = config.mcp || {};
 if ('chatgipite' in mcp) {
     delete mcp['chatgipite'];
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
-    console.log('  Removed chatgipite from opencode config');
+    process.exit(0);
 } else {
-    console.log('  chatgipite not found in opencode config');
+    process.exit(1);
 }
 " "$config_path"
 }
@@ -267,7 +267,8 @@ if (existing.includes('chatgipite:')) {
 
 remove_goose_config() {
     local config_path="$1"
-    [[ -f "$config_path" ]] || return 0
+    [[ -f "$config_path" ]] || return 1
+    grep -q 'chatgipite:' "$config_path" || return 1
     info "Please manually remove the chatgipite block from $config_path"
 }
 
@@ -316,28 +317,23 @@ uninstall_client() {
         claudedesktop)
             local cfg
             cfg=$(get_desktop_config_path)
-            info "Removing from Claude Desktop: $cfg"
-            remove_mcp_config "$cfg" ;;
+            remove_mcp_config "$cfg" && ok "Removed from Claude Desktop" ;;
         claude)
             local cfg
             cfg=$(get_code_config_path)
-            info "Removing from Claude Code: $cfg"
-            remove_mcp_config "$cfg" ;;
+            remove_mcp_config "$cfg" && ok "Removed from Claude Code" ;;
         kilo)
             local cfg
             cfg=$(get_kilo_config_path)
-            info "Removing from Kilo Code: $cfg"
-            remove_mcp_config "$cfg" ;;
+            remove_mcp_config "$cfg" && ok "Removed from Kilo Code" ;;
         opencode)
             local cfg
             cfg=$(get_opencode_config_path)
-            info "Removing from OpenCode: $cfg"
-            remove_opencode_config "$cfg" ;;
+            remove_opencode_config "$cfg" && ok "Removed from OpenCode" ;;
         goose)
             local cfg
             cfg=$(get_goose_config_path)
-            info "Removing from Goose: $cfg"
-            remove_goose_config "$cfg" ;;
+            remove_goose_config "$cfg" && ok "See note above to complete Goose removal" ;;
         *)
             err "Unknown client: $client" ;;
     esac
@@ -414,7 +410,10 @@ echo "  ────────────────────────
 ok "ChatGipite v${VERSION} installed."
 echo ""
 echo "  Next steps:"
-echo "  1. Set ANTHROPIC_API_KEY env var (or add to your client's env config)"
-echo "  2. Restart your MCP client"
-echo "  3. Call biz_full_run to validate your first idea"
+echo "  1. Restart your MCP client"
+echo "  2. Call biz_full_run to validate your first idea"
+echo ""
+echo "  LLM config (optional):"
+echo "    No key needed  : set default_provider: ollama in config/providers.yaml"
+echo "    Anthropic/Claude: export ANTHROPIC_API_KEY=sk-ant-... (or add to client env)"
 echo ""

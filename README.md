@@ -30,14 +30,19 @@ Business idea generation, validation, and execution planning as an MCP tool serv
 
 ```bash
 # macOS / Linux / Git Bash on Windows
-./install.sh -c code          # Claude Code, workspace scope
-./install.sh -c code --global # Claude Code, global scope
-./install.sh -c desktop       # Claude Desktop
-./install.sh -c all           # all detected clients
+./install.sh                        # Claude Desktop (default)
+./install.sh -c claude              # Claude Code, workspace scope
+./install.sh -c claude --global     # Claude Code, global scope
+./install.sh -c claudedesktop       # Claude Desktop (explicit)
+./install.sh -c kilo                # Kilo Code
+./install.sh -c opencode            # OpenCode, workspace scope
+./install.sh -c opencode --global   # OpenCode, global scope
+./install.sh -c goose               # Goose
+./install.sh -c all                 # all detected clients
 ./install.sh --help
 
 # Windows (cmd)
-install.bat -c code
+install.bat -c claude
 install.bat -c all
 ```
 

@@ -2,7 +2,327 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-Business idea generation, validation, and execution planning as an MCP tool server.
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
+![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
+![license](https://img.shields.io/badge/license-MIT-green)
+
+Business idea generation, validation, and execution planning as an MCP server. Runs a full pipeline from raw idea to financial model, pitch deck, and go-to-market playbook — all stored locally per idea.
+
+## Quick Start
+
+**Linux / macOS / Git Bash (Windows):**
+```bash
+cd ChatGipite
+./install.sh                              # Claude Desktop
+./install.sh -c claude                    # Claude Code (workspace-local)
+./install.sh -c claude --global           # Claude Code (global user config)
+./install.sh -c cursor                    # Cursor (workspace-local)
+./install.sh -c cursor --global           # Cursor (global)
+./install.sh -c windsurf                  # Windsurf (global only)
+./install.sh -c vscode                    # VS Code (.vscode/mcp.json)
+./install.sh -c gemini                    # Gemini CLI (workspace-local)
+./install.sh -c gemini --global           # Gemini CLI (global)
+./install.sh -c codex                     # OpenAI Codex CLI (workspace-local)
+./install.sh -c codex --global            # OpenAI Codex CLI (global)
+./install.sh -c zed                       # Zed (global)
+./install.sh -c kilo                      # Kilo Code
+./install.sh -c opencode                  # OpenCode (workspace-local)
+./install.sh -c opencode --global         # OpenCode (global)
+./install.sh -c goose                     # Goose
+./install.sh -c all                       # all detected clients
+```
+
+**Windows (Command Prompt / PowerShell):**
+```bat
+cd ChatGipite
+install.bat                               REM Claude Desktop
+install.bat -c claude                     REM Claude Code (workspace-local)
+install.bat -c claude --global            REM Claude Code (global user config)
+install.bat -c cursor                     REM Cursor (workspace-local)
+install.bat -c cursor --global            REM Cursor (global)
+install.bat -c windsurf                   REM Windsurf (global only)
+install.bat -c vscode                     REM VS Code (.vscode/mcp.json)
+install.bat -c gemini                     REM Gemini CLI (workspace-local)
+install.bat -c gemini --global            REM Gemini CLI (global)
+install.bat -c codex                      REM OpenAI Codex CLI (workspace-local)
+install.bat -c codex --global             REM OpenAI Codex CLI (global)
+install.bat -c zed                        REM Zed (global)
+install.bat -c kilo                       REM Kilo Code
+install.bat -c opencode                   REM OpenCode (workspace-local)
+install.bat -c opencode --global          REM OpenCode (global)
+install.bat -c goose                      REM Goose
+install.bat -c all                        REM all detected clients
+```
+
+The installer runs `npm install`, writes the MCP config entry, and validates the server.
+
+## Supported MCP Clients
+
+| Client | `-c TYPE` | Config written | Notes |
+|--------|-----------|----------------|-------|
+| Claude Desktop | `claudedesktop` | OS-specific `claude_desktop_config.json` | Restart required |
+| Claude Code | `claude` | `.mcp.json` (workspace) or `~/.claude.json` (global) | Use `--global` for user scope |
+| Cursor | `cursor` | `.cursor/mcp.json` or `~/.cursor/mcp.json` (global) | Use `--global` for global |
+| Windsurf | `windsurf` | `~/.codeium/windsurf/mcp_config.json` | Global only |
+| VS Code | `vscode` | `.vscode/mcp.json` | Workspace-local; global via VS Code settings UI |
+| Gemini CLI | `gemini` | `.gemini/settings.json` or `~/.gemini/settings.json` (global) | Use `--global` for global |
+| Codex CLI | `codex` | `.codex/config.toml` or `~/.codex/config.toml` (global) | TOML; use `--global` for global |
+| Zed | `zed` | `~/.config/zed/settings.json` | Global only |
+| Kilo Code | `kilo` | `.kilocode/mcp.json` | Workspace-local only |
+| OpenCode | `opencode` | `opencode.json` / `~/.config/opencode/opencode.json` | Use `--global` for global |
+| Goose | `goose` | `~/.config/goose/config.yaml` | Global only |
+| pi.dev | `pidev` | n/a | Prints manual instructions; no auto-config |
+| All above | `all` | All detected existing configs | Skips clients not yet installed |
+
+## Installer Flags
+
+```
+  -c, --client TYPE   claudedesktop, claude, cursor, windsurf, vscode, gemini, codex,
+                      zed, kilo, opencode, goose, pidev, all  (default: claudedesktop)
+  -f, --force         Skip prompts, overwrite existing config
+  -u, --uninstall     Remove from MCP client config
+      --upgrade       Upgrade deps and reconfigure (alias: --update)
+      --status        Show where this server is currently installed
+      --global        Write to global config (claude, cursor, gemini, codex, opencode)
+      --skip-test     Skip server validation
+  -h, --help          Show this help
+```
+
+### Check install status
+
+```bash
+./install.sh --status
+```
+
+### Upgrade
+
+Pull the latest source first (or re-download and extract), then:
+
+```bash
+./install.sh --upgrade                    # reinstall deps
+./install.sh --upgrade -c all             # also reconfigure all clients
+```
+
+`--update` is an alias for `--upgrade`.
+
+### Uninstall
+
+```bash
+./install.sh -u -c all
+install.bat -u -c all   # Windows
+```
+
+## Manual Setup
+
+```bash
+npm install
+node server.js   # verify it starts, then Ctrl+C
+```
+
+No API key required for fully local use — set `default_provider: ollama` in `config/providers.yaml`.
+For Anthropic/Claude: `export ANTHROPIC_API_KEY=sk-ant-...`
+
+Add ChatGipite to your MCP client config (use absolute paths):
+
+### Claude Desktop
+
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Linux:** `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+Workspace-local (`.mcp.json` in your project root):
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+Global user scope:
+```bash
+claude mcp add --scope user chatgipite -- node /absolute/path/to/ChatGipite/server.js
+```
+
+### Cursor
+
+`.cursor/mcp.json` (workspace) or `~/.cursor/mcp.json` (global):
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### Windsurf
+
+`~/.codeium/windsurf/mcp_config.json`:
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### VS Code
+
+`.vscode/mcp.json` in your workspace root (note: VS Code uses `servers`, not `mcpServers`):
+```json
+{
+  "servers": {
+    "chatgipite": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+For user-level config, add via VS Code Settings UI under `mcp.servers`.
+
+### Gemini CLI
+
+`.gemini/settings.json` (workspace) or `~/.gemini/settings.json` (global):
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### OpenAI Codex CLI
+
+`.codex/config.toml` (workspace) or `~/.codex/config.toml` (global):
+```toml
+[mcp_servers.chatgipite]
+command = "node /absolute/path/to/ChatGipite/server.js"
+startup_timeout_sec = 30
+tool_timeout_sec = 300
+enabled = true
+```
+
+### Zed
+
+`~/.config/zed/settings.json`:
+```json
+{
+  "context_servers": {
+    "chatgipite": {
+      "command": {
+        "path": "node",
+        "args": ["/absolute/path/to/ChatGipite/server.js"],
+        "env": {}
+      }
+    }
+  }
+}
+```
+
+### Kilo Code
+
+`.kilocode/mcp.json` in your workspace root:
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### OpenCode
+
+`opencode.json` (workspace) or `~/.config/opencode/opencode.json` (global):
+```json
+{
+  "mcp": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"]
+    }
+  }
+}
+```
+
+### Goose
+
+`~/.config/goose/config.yaml`:
+```yaml
+extensions:
+  chatgipite:
+    type: stdio
+    cmd: node
+    args:
+      - /absolute/path/to/ChatGipite/server.js
+    enabled: true
+```
+
+### pi.dev
+
+pi.dev does not support MCP servers natively. It uses TypeScript extensions instead. Add a minimal bridge:
+
+```typescript
+// ~/.pi/extensions/chatgipite-bridge.ts
+import { Extension } from "@pi-dev/sdk";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+export default class ChatGipiteBridge extends Extension {
+  name = "chatgipite";
+
+  async activate() {
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: ["/absolute/path/to/ChatGipite/server.js"],
+    });
+    const client = new Client({ name: "chatgipite-bridge", version: "1.0.0" }, {});
+    await client.connect(transport);
+    this.registerMcpClient(client);
+  }
+}
+```
+
+Register in `~/.pi/agent/settings.json`:
+```json
+{
+  "extensions": ["~/.pi/extensions/chatgipite-bridge.ts"]
+}
+```
+
+On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client after editing any config.
 
 ## Tools
 
@@ -21,95 +341,50 @@ Business idea generation, validation, and execution planning as an MCP tool serv
 | `biz_full_run` | Full pipeline in one call: validate, compete, financials, canvas, deck, playbook, names |
 | `biz_recall` | Full-text search across all stored analyses |
 
+## Typical Flow
+
+Step by step:
+```
+biz_generate    {sector: "healthtech"}
+biz_validate    {idea: "AI triage assistant for rural clinics"}
+biz_competitors {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+biz_financials  {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+biz_canvas      {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+biz_pitchdeck   {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+biz_name        {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+biz_playbook    {idea_slug: "ai-triage-assistant-for-rural-clinics"}
+```
+
+Or in one call:
+```
+biz_full_run {idea: "AI triage assistant for rural clinics"}
+```
+
+## Artifacts
+
+Saved to `ideas/{slug}/`:
+
+| File | Contents |
+|------|----------|
+| `brief.md` | Validation analysis and ICE score |
+| `competitive.md` | Competitor landscape |
+| `financials.md` | Financial model |
+| `canvas.md` | Business Model Canvas |
+| `pitchdeck.md` | Pitch deck |
+| `playbook.md` | 30/60/90-day plan |
+| `names.md` | Name candidates with availability table |
+
+## Configuration
+
+Edit `config/providers.yaml` to change the LLM used for internal analysis agents. Default is `claude-sonnet-4-6`. Ollama is supported for fully local operation.
+
+The client LLM (what you chat with in your IDE) and ChatGipite's internal agents are independent. You can use ChatGipite from Cursor with GPT-4o while the analysis runs on Claude.
+
 ## Requirements
 
 - Node.js 20+ (Node 24 supported)
 - LLM API key (optional — Ollama works out of the box for fully local use)
 
-## Install
+## License
 
-```bash
-# macOS / Linux / Git Bash on Windows
-./install.sh                        # Claude Desktop (default)
-./install.sh -c claude              # Claude Code, workspace scope
-./install.sh -c claude --global     # Claude Code, global scope
-./install.sh -c claudedesktop       # Claude Desktop (explicit)
-./install.sh -c kilo                # Kilo Code
-./install.sh -c opencode            # OpenCode, workspace scope
-./install.sh -c opencode --global   # OpenCode, global scope
-./install.sh -c goose               # Goose
-./install.sh -c all                 # all detected clients
-./install.sh --help
-
-# Windows (cmd)
-install.bat -c claude
-install.bat -c all
-```
-
-The installer runs `npm install` and writes the MCP config entry automatically.
-
-## Supported Clients (auto-configured by installer)
-
-- Claude Code (workspace `.mcp.json` or global `~/.claude/mcp.json`)
-- Claude Desktop
-- Kilo Code (`.kilocode/mcp.json`)
-- OpenCode (`opencode.json` or global)
-- Goose (`~/.config/goose/config.yaml`)
-
-For Cursor, Zed, Windsurf, and Continue.dev, see the manual config blocks in `CLAUDE.md`.
-
-## Manual Setup
-
-```bash
-npm install
-node server.js
-```
-
-No API key required for local use — set `default_provider: ollama` in `config/providers.yaml`.
-To use Anthropic/Claude, set the key in your environment or MCP client config:
-
-```bash
-export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-## Usage
-
-```
-# Generate ideas in a sector
-biz_generate {sector: "edtech"}
-
-# Full analysis of a specific idea
-biz_full_run {idea: "AI tutor for Filipino high school students"}
-
-# Check name availability
-biz_name_check {name: "TuturAI"}
-
-# Search previous analyses
-biz_recall {query: "edtech Philippines"}
-```
-
-Artifacts are saved to `ideas/{slug}/`:
-
-| File | Contents |
-|------|----------|
-| `brief.md` | Validation analysis and ICE score |
-| `competitive.md` | Competitor analysis |
-| `financials.md` | Unit economics and P&L |
-| `canvas.md` | Business Model Canvas |
-| `pitchdeck.md` | Pitch deck |
-| `playbook.md` | 30/60/90-day execution plan |
-| `names.md` | Name candidates with availability table |
-
-## Configuration
-
-Edit `config/providers.yaml` to change the LLM used for internal analysis agents.
-Default is `claude-sonnet-4-6`. Ollama is supported for fully local operation.
-
-The client LLM (what you chat with in your IDE) and ChatGipite's internal agents run independently. You can use ChatGipite from Cursor with GPT-4o while the analysis runs on Claude, or swap everything to Ollama.
-
-## Uninstall
-
-```bash
-./install.sh -u -c all
-install.bat -u -c all   # Windows
-```
+MIT

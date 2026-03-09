@@ -326,24 +326,58 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 
 ## Tools
 
+### Idea generation & validation
 | Tool | Output |
 |------|--------|
 | `biz_generate` | 5 differentiated business ideas from a sector or problem statement |
 | `biz_validate` | Viability analysis: problem, ICP, solution, revenue model, market size, ICE score |
 | `biz_ice_score` | Impact / Confidence / Ease scoring (1-10 each) with rationale |
+
+### Market & customer analysis
+| Tool | Output |
+|------|--------|
+| `biz_tam` | Deep TAM/SAM/SOM sizing — top-down + bottom-up with 5-year projections |
+| `biz_personas` | 3-5 JTBD-framed customer personas, ICP priority matrix, WTP per segment |
+| `biz_trends` | PESTLE + technology S-curve analysis, tailwinds/headwinds, market timing verdict |
+| `biz_competitors` | Competitor table, gap analysis, differentiation strategy |
+| `biz_landscape` | Deep competitive intelligence: funding trajectories, moat analysis, white-space map, positioning grid |
+
+### Strategy & positioning
+| Tool | Output |
+|------|--------|
+| `biz_swot` | SWOT table + Porter's Five Forces (rated 1-5) with SO/WO/ST/WT cross-analysis |
+| `biz_pricing` | 3-tier pricing architecture, value metric, competitor price table, expansion revenue paths |
+| `biz_gtm` | GTM motion, beachhead segment, 0→100 and 100→1000 channels, 30-day launch plan |
+| `biz_journey` | 7-stage customer journey map, moments of truth, drop-off risks, delight opportunities |
+| `biz_expansion` | Market entry modes, 3-phase expansion roadmap, localization requirements, go/no-go criteria |
+
+### Financial modeling & risk
+| Tool | Output |
+|------|--------|
+| `biz_financials` | Unit economics, LTV:CAC ratio, break-even, 12-month P&L |
+| `biz_model` | 3-scenario P&L (base/upside/downside), cohort retention, sensitivity table, funding requirements |
+| `biz_risks` | Risk register (probability × impact), scenario narratives, regulatory flags, 90-day assumption tests |
+
+### Presentation & execution
+| Tool | Output |
+|------|--------|
 | `biz_canvas` | Business Model Canvas (all 9 blocks) |
 | `biz_pitchdeck` | 10-slide pitch deck content |
+| `biz_playbook` | 30/60/90-day execution plan with milestones, KPIs, risk flags |
 | `biz_name` | Name candidates with live domain and social availability check |
 | `biz_name_check` | Availability check for a specific name (.com DNS, Instagram, LinkedIn, TikTok) |
-| `biz_competitors` | Competitor table, gap analysis, differentiation strategy |
-| `biz_financials` | Unit economics, LTV:CAC ratio, break-even, 12-month P&L |
-| `biz_playbook` | 30/60/90-day execution plan with milestones, KPIs, risk flags |
-| `biz_full_run` | Full pipeline in one call: validate, compete, financials, canvas, deck, playbook, names |
+| `biz_synthesis` | Executive brief: conviction score (1-10), 5 key decisions, 90-day action roadmap |
+
+### Pipelines
+| Tool | Output |
+|------|--------|
+| `biz_full_run` | 7-step pipeline: validate → competitors → financials → canvas → pitchdeck → playbook → names |
+| `biz_deep_run` | 15-step workflow + names: validate → personas → trends → market → TAM → financials → model → SWOT → pricing → GTM → journey → risks → landscape → expansion → synthesis → names |
 | `biz_recall` | Full-text search across all stored analyses |
 
 ## Typical Flow
 
-Step by step:
+Step by step (standard):
 ```
 biz_generate    {sector: "healthtech"}
 biz_validate    {idea: "AI triage assistant for rural clinics"}
@@ -355,15 +389,17 @@ biz_name        {idea_slug: "ai-triage-assistant-for-rural-clinics"}
 biz_playbook    {idea_slug: "ai-triage-assistant-for-rural-clinics"}
 ```
 
-Or in one call:
+Full pipeline in one call:
 ```
-biz_full_run {idea: "AI triage assistant for rural clinics"}
+biz_full_run  {idea: "AI triage assistant for rural clinics"}
+biz_deep_run  {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
 ```
 
 ## Artifacts
 
 Saved to `ideas/{slug}/`:
 
+### Standard (`biz_full_run`)
 | File | Contents |
 |------|----------|
 | `brief.md` | Validation analysis and ICE score |
@@ -373,6 +409,24 @@ Saved to `ideas/{slug}/`:
 | `pitchdeck.md` | Pitch deck |
 | `playbook.md` | 30/60/90-day plan |
 | `names.md` | Name candidates with availability table |
+
+### Deep (`biz_deep_run`)
+All of the above, plus:
+
+| File | Contents |
+|------|----------|
+| `personas.md` | Customer personas, ICP matrix, WTP |
+| `trends.md` | PESTLE, S-curve, market timing |
+| `tam.md` | TAM/SAM/SOM sizing |
+| `model.md` | 3-scenario financial model |
+| `swot.md` | SWOT + Porter's Five Forces |
+| `pricing.md` | Pricing architecture |
+| `gtm.md` | Go-to-market strategy |
+| `journey.md` | Customer journey map |
+| `risks.md` | Risk register and scenarios |
+| `landscape.md` | Deep competitive intelligence |
+| `expansion.md` | Market entry and expansion roadmap |
+| `synthesis.md` | Executive brief with conviction score |
 
 ## Configuration
 

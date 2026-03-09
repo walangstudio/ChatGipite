@@ -141,6 +141,170 @@
       }
     },
     {
+      "name": "biz_tam",
+      "description": "Deep TAM/SAM/SOM sizing using both top-down and bottom-up methodology. Produces addressable market estimates with geographic breakdowns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "geography": { "type": "string", "description": "Geographic scope (e.g. US, Global, APAC, Europe)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_personas",
+      "description": "Generate 3-5 customer personas with Jobs-to-be-Done framing, ICP prioritization, and willingness-to-pay estimates per segment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "segment_focus": { "type": "string", "description": "Optional: focus on a specific segment (e.g. SMB, enterprise, consumers)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_trends",
+      "description": "Analyze industry trends using PESTLE + technology S-curves. Maps tailwinds, headwinds, and market timing window across 1/3/5-year horizons.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "horizon": { "type": "string", "description": "Analysis horizon: 1yr, 3yr, or 5yr (default: 3yr)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_swot",
+      "description": "SWOT analysis + Porter's Five Forces (each force rated 1-5) with strategic cross-analysis (SO/WO/ST/WT strategies).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_pricing",
+      "description": "Design a 3-tier pricing architecture with model selection, competitor price table, value metric, and expansion revenue paths.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "model_preference": { "type": "string", "description": "Optional pricing model preference (e.g. usage-based, seat-based, freemium)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_gtm",
+      "description": "Go-to-market strategy: GTM motion, beachhead segment, 0→100 and 100→1000 channels, positioning statement, and 30-day launch plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "stage": { "type": "string", "description": "Current stage: pre-launch, launched, or scaling" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_journey",
+      "description": "Map the 7-stage customer journey (Awareness → Advocacy) with moments of truth, drop-off risks, and delight opportunities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "persona": { "type": "string", "description": "Optional: focus on a specific persona (references personas artifact if available)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_landscape",
+      "description": "Deep competitive intelligence: funding trajectories, moat analysis, white-space map, positioning grid, and competitive response scenarios.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_model",
+      "description": "3-scenario financial model (base/upside/downside) with monthly P&L, cohort retention, sensitivity analysis, and funding requirements.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "assumptions": {
+            "type": "object",
+            "description": "Override base-case assumptions",
+            "properties": {
+              "price_per_user": { "type": "number" },
+              "monthly_churn_pct": { "type": "number" },
+              "cac_estimate": { "type": "number" },
+              "initial_users": { "type": "number" },
+              "monthly_growth_pct": { "type": "number" }
+            }
+          }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_risks",
+      "description": "Risk register (probability × impact), 3-scenario narratives (base/upside/downside), regulatory flags, and 90-day assumption validation tests.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_expansion",
+      "description": "Market entry mode analysis, 3-phase geographic/vertical expansion roadmap, localization requirements, and measurable go/no-go criteria per phase.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "target_markets": { "type": "string", "description": "Optional: specific markets to analyze (e.g. EU, APAC, LATAM)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_synthesis",
+      "description": "Executive synthesis: reads all available artifacts and produces a board-level brief with conviction score (1-10), 5 key decisions, and 90-day action roadmap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_deep_run",
+      "description": "Full deep-analysis pipeline (15-step workflow + names): validate → personas → trends → market → tam → financials → model → swot → pricing → gtm → journey → risks → landscape → expansion → synthesis → names. Saves 16 artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
       "name": "biz_recall",
       "description": "Full-text search across all stored ideas, analyses, and artifacts.",
       "inputSchema": {
@@ -148,7 +312,7 @@
         "properties": {
           "query": { "type": "string", "description": "Search query" },
           "limit": { "type": "number", "description": "Max results (default: 10)" },
-          "type": { "type": "string", "description": "Filter by type: ideas, validations, financials, playbooks, names" }
+          "type": { "type": "string", "description": "Filter by type: ideas, validations, financials, playbooks, names, tam, personas, trends, swot, pricing, gtm, journey, landscape, model, risks, expansion, synthesis" }
         },
         "required": ["query"]
       }

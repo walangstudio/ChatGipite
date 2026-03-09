@@ -1,6 +1,6 @@
 ---
 name: quick-validate
-description: Fast validation: ICE score and Business Model Canvas
+description: "Fast validation: ICE score and Business Model Canvas"
 steps:
   - id: validate
     agent: validator

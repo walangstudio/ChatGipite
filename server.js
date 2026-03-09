@@ -337,6 +337,205 @@ async function handleRecall(args) {
   return ok(`# Recall: "${query}"\n**${results.length} result(s) found**\n\n${formatted}`);
 }
 
+async function handleTam(args) {
+  const { idea_slug, geography = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const spec = loadAgentSpec('market-analyst');
+  const task = `Produce a deep TAM/SAM/SOM analysis using both top-down and bottom-up methodology for the business idea: "${idea_slug}".${geography ? ` Focus on the ${geography} geography.` : ''} Break down Total Addressable Market, Serviceable Addressable Market, and Serviceable Obtainable Market with explicit assumptions for each. Include 5-year market growth projections.`;
+  const output = await dispatch('market-analyst', spec, task, brief);
+  await saveArtifact(idea_slug, 'tam.md', output);
+  memory.store('tam', `TAM: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handlePersonas(args) {
+  const { idea_slug, segment_focus = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const spec = loadAgentSpec('persona-analyst');
+  const task = `Generate 3-5 customer personas with Jobs-to-be-Done framing, ICP prioritization, and willingness-to-pay estimates for: "${idea_slug}".${segment_focus ? ` Focus on the ${segment_focus} segment.` : ''}`;
+  const output = await dispatch('persona-analyst', spec, task, brief);
+  await saveArtifact(idea_slug, 'personas.md', output);
+  memory.store('personas', `Personas: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleTrends(args) {
+  const { idea_slug, horizon = '3yr' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const tam = readArtifact(idea_slug, 'tam.md') ?? '';
+  const context = [brief, tam].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('trend-analyst');
+  const task = `Analyze industry trends using PESTLE and technology S-curves for: "${idea_slug}". Time horizon: ${horizon}. Identify tailwinds, headwinds, and market timing verdict.`;
+  const output = await dispatch('trend-analyst', spec, task, context);
+  await saveArtifact(idea_slug, 'trends.md', output);
+  memory.store('trends', `Trends: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleSwot(args) {
+  const { idea_slug } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const comp = readArtifact(idea_slug, 'competitive.md') ?? '';
+  const context = [brief, comp].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('strategy-analyst');
+  const task = `Produce a SWOT analysis + Porter's Five Forces (each force rated 1-5) with strategic cross-analysis for: "${idea_slug}"`;
+  const output = await dispatch('strategy-analyst', spec, task, context);
+  await saveArtifact(idea_slug, 'swot.md', output);
+  memory.store('swot', `SWOT: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handlePricing(args) {
+  const { idea_slug, model_preference = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const personas = readArtifact(idea_slug, 'personas.md') ?? '';
+  const comp = readArtifact(idea_slug, 'competitive.md') ?? '';
+  const context = [brief, personas, comp].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('pricing-strategist');
+  const task = `Design a 3-tier pricing architecture with model selection, competitor price table, and expansion revenue paths for: "${idea_slug}".${model_preference ? ` Preferred model: ${model_preference}.` : ''}`;
+  const output = await dispatch('pricing-strategist', spec, task, context);
+  await saveArtifact(idea_slug, 'pricing.md', output);
+  memory.store('pricing', `Pricing: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleGtm(args) {
+  const { idea_slug, stage = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const personas = readArtifact(idea_slug, 'personas.md') ?? '';
+  const comp = readArtifact(idea_slug, 'competitive.md') ?? '';
+  const pricing = readArtifact(idea_slug, 'pricing.md') ?? '';
+  const context = [brief, personas, comp, pricing].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('gtm-strategist');
+  const task = `Create a go-to-market strategy with beachhead segment, channel plan, and launch roadmap for: "${idea_slug}".${stage ? ` Current stage: ${stage}.` : ''}`;
+  const output = await dispatch('gtm-strategist', spec, task, context);
+  await saveArtifact(idea_slug, 'gtm.md', output);
+  memory.store('gtm', `GTM: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleJourney(args) {
+  const { idea_slug, persona = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const personas = readArtifact(idea_slug, 'personas.md') ?? '';
+  const context = [brief, personas].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('journey-mapper');
+  const task = `Map the 7-stage customer journey with moments of truth, drop-off risks, and delight opportunities for: "${idea_slug}".${persona ? ` Focus on persona: ${persona}.` : ''}`;
+  const output = await dispatch('journey-mapper', spec, task, context);
+  await saveArtifact(idea_slug, 'journey.md', output);
+  memory.store('journey', `Journey: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleLandscape(args) {
+  const { idea_slug, market = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const spec = loadAgentSpec('competitive-intelligence');
+  const task = `Produce a deep competitive intelligence analysis with funding trajectories, moat assessment, white-space map, and positioning grid for: "${idea_slug}".${market ? ` Market focus: ${market}.` : ''}`;
+  const output = await dispatch('competitive-intelligence', spec, task, brief);
+  await saveArtifact(idea_slug, 'landscape.md', output);
+  memory.store('landscape', `Landscape: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleModel(args) {
+  const { idea_slug, assumptions = {} } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const assumptionsText = Object.keys(assumptions).length
+    ? `\n\nUse these specific base-case assumptions:\n${JSON.stringify(assumptions, null, 2)}`
+    : '';
+  const spec = loadAgentSpec('financial-modeler');
+  const task = `Build a 3-scenario financial model (base/upside/downside) with monthly P&L, cohort retention, sensitivity analysis, and funding requirements for: "${idea_slug}".${assumptionsText}`;
+  const output = await dispatch('financial-modeler', spec, task, brief);
+  await saveArtifact(idea_slug, 'model.md', output);
+  memory.store('model', `Model: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleRisks(args) {
+  const { idea_slug } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const financials = readArtifact(idea_slug, 'financials.md') ?? '';
+  const comp = readArtifact(idea_slug, 'competitive.md') ?? '';
+  const context = [brief, financials, comp].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('risk-analyst');
+  const task = `Build a risk register (probability × impact), 3-scenario narratives, and regulatory assessment for: "${idea_slug}"`;
+  const output = await dispatch('risk-analyst', spec, task, context);
+  await saveArtifact(idea_slug, 'risks.md', output);
+  memory.store('risks', `Risks: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleExpansion(args) {
+  const { idea_slug, target_markets = '' } = args;
+  const brief = readIdeaBrief(idea_slug);
+  const tam = readArtifact(idea_slug, 'tam.md') ?? '';
+  const comp = readArtifact(idea_slug, 'competitive.md') ?? '';
+  const context = [brief, tam, comp].filter(Boolean).join('\n\n---\n\n');
+  const spec = loadAgentSpec('expansion-strategist');
+  const task = `Design a market entry mode analysis and 3-phase expansion roadmap with go/no-go criteria for: "${idea_slug}".${target_markets ? ` Target markets: ${target_markets}.` : ''}`;
+  const output = await dispatch('expansion-strategist', spec, task, context);
+  await saveArtifact(idea_slug, 'expansion.md', output);
+  memory.store('expansion', `Expansion: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleSynthesis(args) {
+  const { idea_slug } = args;
+  const artifactFiles = [
+    'brief.md', 'competitive.md', 'landscape.md', 'financials.md', 'model.md',
+    'tam.md', 'personas.md', 'trends.md', 'swot.md', 'pricing.md',
+    'gtm.md', 'journey.md', 'risks.md', 'expansion.md',
+  ];
+  const parts = artifactFiles
+    .map(f => ({ file: f, content: readArtifact(idea_slug, f) }))
+    .filter(({ content }) => content !== null)
+    .map(({ file, content }) => `## ${file}\n\n${content}`);
+
+  const context = parts.join('\n\n---\n\n');
+  const spec = loadAgentSpec('executive-advisor');
+  const task = `Synthesize all available analysis into a board-level executive brief with conviction score and strategic recommendation for: "${idea_slug}"`;
+  const output = await dispatch('executive-advisor', spec, task, context);
+  await saveArtifact(idea_slug, 'synthesis.md', output);
+  memory.store('synthesis', `Synthesis: ${idea_slug}`, { idea: idea_slug });
+  return ok(output);
+}
+
+async function handleDeepRun(args) {
+  const { idea, sector = '', constraints = '' } = args;
+  const slug = toSlug(idea);
+  const patchedParams = { constraints, sector, slug };
+
+  const { summary } = await runWorkflow('deep-analysis', idea, patchedParams, WORKSPACE, memory);
+
+  try {
+    await handleName({ idea_slug: slug, style: 'mixed', count: 6 });
+  } catch {
+    // non-fatal
+  }
+
+  const artifactFiles = [
+    'brief.md', 'personas.md', 'trends.md', 'competitive.md', 'tam.md',
+    'financials.md', 'model.md', 'swot.md', 'pricing.md', 'gtm.md',
+    'journey.md', 'risks.md', 'landscape.md', 'expansion.md', 'synthesis.md', 'names.md',
+  ];
+  const artifactList = artifactFiles
+    .map(f => `ideas/${slug}/${f}`)
+    .filter(f => fs.existsSync(path.join(WORKSPACE, f)));
+
+  const header = [
+    `# Deep Analysis Complete: ${idea}`,
+    `**Slug:** \`${slug}\``,
+    `**Artifacts generated:**`,
+    ...artifactList.map(f => `- \`${f}\``),
+    '',
+    '---',
+    '',
+  ].join('\n');
+
+  return ok(header + summary);
+}
+
 // ── server setup ───────────────────────────────────────────────────────────
 
 const server = new Server(
@@ -362,6 +561,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'biz_financials':  return await handleFinancials(args);
       case 'biz_playbook':    return await handlePlaybook(args);
       case 'biz_full_run':    return await handleFullRun(args);
+      case 'biz_tam':         return await handleTam(args);
+      case 'biz_personas':    return await handlePersonas(args);
+      case 'biz_trends':      return await handleTrends(args);
+      case 'biz_swot':        return await handleSwot(args);
+      case 'biz_pricing':     return await handlePricing(args);
+      case 'biz_gtm':         return await handleGtm(args);
+      case 'biz_journey':     return await handleJourney(args);
+      case 'biz_landscape':   return await handleLandscape(args);
+      case 'biz_model':       return await handleModel(args);
+      case 'biz_risks':       return await handleRisks(args);
+      case 'biz_expansion':   return await handleExpansion(args);
+      case 'biz_synthesis':   return await handleSynthesis(args);
+      case 'biz_deep_run':    return await handleDeepRun(args);
       case 'biz_recall':      return await handleRecall(args);
       default:
         return err(`Unknown tool: ${name}`);

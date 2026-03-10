@@ -2,7 +2,7 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-![version](https://img.shields.io/badge/version-0.1.0-blue)
+![version](https://img.shields.io/badge/version-0.2.0-blue)
 ![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -329,7 +329,7 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 ### Idea generation & validation
 | Tool | Output |
 |------|--------|
-| `biz_generate` | 5 differentiated business ideas from a sector or problem statement |
+| `biz_generate` | Business ideas from a sector, problem, or constraints (`count` param, default 1) |
 | `biz_validate` | Viability analysis: problem, ICP, solution, revenue model, market size, ICE score |
 | `biz_ice_score` | Impact / Confidence / Ease scoring (1-10 each) with rationale |
 
@@ -430,9 +430,106 @@ All of the above, plus:
 
 ## Configuration
 
-Edit `config/providers.yaml` to change the LLM used for internal analysis agents. Default is `claude-sonnet-4-6`. Ollama is supported for fully local operation.
+The client LLM (what you chat with in your IDE) and ChatGipite's internal agents are independent. You can use ChatGipite from Cursor with GPT-4o while the analysis runs on a local Ollama model.
 
-The client LLM (what you chat with in your IDE) and ChatGipite's internal agents are independent. You can use ChatGipite from Cursor with GPT-4o while the analysis runs on Claude.
+### Config resolution order
+
+ChatGipite looks for provider config in this order:
+
+1. `CHATGIPITE_CONFIG` env var — absolute path to any yaml/json file
+2. `providers.yaml` in the MCP server's working directory
+3. `providers.json` in the MCP server's working directory
+4. `config/providers.yaml` in the install directory (default)
+
+### Using a project-specific config
+
+Drop a `providers.yaml` anywhere and point to it via the env var in your MCP config:
+
+```json
+{
+  "mcpServers": {
+    "chatgipite": {
+      "command": "node",
+      "args": ["/absolute/path/to/ChatGipite/server.js"],
+      "env": {
+        "CHATGIPITE_CONFIG": "/path/to/my-project/providers.yaml"
+      }
+    }
+  }
+}
+```
+
+Or set it in your shell before launching the client:
+
+```bash
+export CHATGIPITE_CONFIG=/path/to/my-project/providers.yaml
+# Windows
+set CHATGIPITE_CONFIG=C:\path\to\my-project\providers.yaml
+```
+
+### Supported providers
+
+| Provider | Type | Notes |
+|----------|------|-------|
+| `anthropic` | Native SDK | Default. Set `ANTHROPIC_API_KEY`. |
+| `ollama` | Local HTTP | No key needed. |
+| `openai` | OpenAI-compatible | Set `OPENAI_API_KEY`. |
+| `openrouter` | OpenAI-compatible | Access 200+ models. Set `OPENROUTER_API_KEY`. |
+| `groq` | OpenAI-compatible | Fast inference. Set `GROQ_API_KEY`. |
+| `nvidia` | OpenAI-compatible | NVIDIA NIM. Set `NVIDIA_API_KEY`. |
+| `google` | OpenAI-compatible | Gemini via OpenAI-compat endpoint. Set `GOOGLE_API_KEY`. |
+| `lmstudio` | OpenAI-compatible | Local. No key needed. Default port `1234`. |
+| `jan` | OpenAI-compatible | Local. No key needed. Default port `1337`. |
+
+Any endpoint following the `/v1/chat/completions` spec works with `type: openai_compatible` — including Azure OpenAI, Mistral, Together AI, Kilo, and others.
+
+No API key configured for a provider? ChatGipite falls back to passthrough — the host model (the one you're chatting with) handles the analysis instead.
+
+### Sample config
+
+```yaml
+default_provider: ollama
+
+providers:
+  ollama:
+    default_model: llama3.2
+    base_url: http://localhost:11434
+
+  lmstudio:
+    type: openai_compatible
+    default_model: your-loaded-model-name
+    base_url: http://localhost:1234/v1
+
+  nvidia:
+    type: openai_compatible
+    default_model: meta/llama-3.3-70b-instruct
+    base_url: https://integrate.api.nvidia.com/v1
+    api_key: nvapi-...   # or set NVIDIA_API_KEY env var
+
+  openrouter:
+    type: openai_compatible
+    default_model: openai/gpt-4o
+    base_url: https://openrouter.ai/api/v1
+    # api_key: ...  (set OPENROUTER_API_KEY env var)
+
+# Route specific agents to specific providers
+agent_providers:
+  ideator: lmstudio       # fast local generation
+  validator: nvidia       # stronger model for validation
+  financial-analyst: openrouter
+
+# Override model per agent (stacks on top of agent_providers)
+model_per_agent:
+  financial-analyst: anthropic/claude-opus-4-5
+```
+
+### Debug logging
+
+Set `CHATGIPITE_DEBUG=1` to enable verbose logging to `chatgipite.log` in the install directory:
+
+```json
+"env": { "CHATGIPITE_DEBUG": "1", "CHATGIPITE_CONFIG": "/path/to/providers.yaml" }
+```
 
 ## Requirements
 

@@ -2,13 +2,14 @@
   "tools": [
     {
       "name": "biz_generate",
-      "description": "Generate 3-5 business ideas based on optional sector, problem statement, or constraints. Returns structured idea briefs with problem/solution/target/hooks.",
+      "description": "Generate business ideas based on optional sector, problem statement, or constraints. Returns structured idea briefs with problem/solution/target/hooks.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "sector": { "type": "string", "description": "Industry or sector (e.g. healthtech, edtech, fintech, SaaS, consumer)" },
           "problem": { "type": "string", "description": "A problem or pain point to build around" },
-          "constraints": { "type": "string", "description": "Constraints like budget, solo founder, B2B only, no-code, etc." }
+          "constraints": { "type": "string", "description": "Constraints like budget, solo founder, B2B only, no-code, etc." },
+          "count": { "type": "number", "description": "Number of ideas to generate (default: 1)" }
         }
       }
     },

@@ -19,6 +19,19 @@ const TOOLS = JSON.parse(fs.readFileSync(path.join(__dirname, 'tools/index.json'
 const WORKSPACE = __dirname;
 const DB_PATH = path.join(WORKSPACE, 'db/chatgipite.sqlite');
 
+const LOG_FILE = path.join(__dirname, 'chatgipite.log');
+const log = process.env.CHATGIPITE_DEBUG
+  ? (msg) => {
+      const line = `${new Date().toISOString()} ${msg}\n`;
+      process.stderr.write(line);
+      fs.appendFileSync(LOG_FILE, line);
+    }
+  : () => {};
+
+log(`server starting`);
+log(`cwd: ${process.cwd()}`);
+log(`CHATGIPITE_CONFIG: ${process.env.CHATGIPITE_CONFIG || '(not set)'}`);
+
 memory.init(DB_PATH);
 
 // ── helpers ────────────────────────────────────────────────────────────────
@@ -67,7 +80,7 @@ function err(text) {
 // ── tool handlers ──────────────────────────────────────────────────────────
 
 async function handleGenerate(args) {
-  const { sector = '', problem = '', constraints = '' } = args;
+  const { sector = '', problem = '', constraints = '', count = 1 } = args;
 
   const context = [
     sector && `Sector/Industry: ${sector}`,
@@ -75,7 +88,7 @@ async function handleGenerate(args) {
     constraints && `Constraints: ${constraints}`,
   ].filter(Boolean).join('\n');
 
-  const task = `Generate 5 original, differentiated business ideas${sector ? ` in the ${sector} sector` : ''}${problem ? ` addressing the problem: ${problem}` : ''}. For each idea, produce a full structured brief as specified.`;
+  const task = `Generate ${count} original, differentiated business idea${count === 1 ? '' : 's'}${sector ? ` in the ${sector} sector` : ''}${problem ? ` addressing the problem: ${problem}` : ''}. For each idea, produce a full structured brief as specified.`;
 
   const spec = loadAgentSpec('ideator');
   const output = await dispatch('ideator', spec, task, context);

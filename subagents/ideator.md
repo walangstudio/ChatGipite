@@ -22,6 +22,10 @@ For each idea, produce a structured brief:
 **Hook / Insight:** [The non-obvious insight that makes this work]
 ```
 
+## After the Ideas
+
+At the end of your response, suggest 2-3 clarifying questions that would help refine or narrow the ideas further — things like budget constraints, founder background, B2B vs B2C preference, solo vs team, no-code only, geography, or go-to-market preference. Keep it brief and conversational.
+
 ## Guidelines
 
 - Generate ideas that are specific, not generic ("AI for healthcare" is too vague — "AI triage assistant for rural telehealth nurses" is good)

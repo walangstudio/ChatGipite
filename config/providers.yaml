@@ -9,6 +9,52 @@ providers:
     default_model: llama3
     base_url: http://localhost:11434
 
+  # --- OpenAI-compatible providers ---
+  # Any provider using the /v1/chat/completions spec works here.
+  # Remote providers need an API key; local ones (LM Studio, Jan) do not.
+
+  # openai:
+  #   type: openai_compatible
+  #   default_model: gpt-4o
+  #   base_url: https://api.openai.com/v1
+  #   # api_key: sk-...  (or set OPENAI_API_KEY env var)
+
+  # openrouter:
+  #   type: openai_compatible
+  #   default_model: openai/gpt-4o
+  #   base_url: https://openrouter.ai/api/v1
+  #   # api_key: ...  (or set OPENROUTER_API_KEY env var)
+
+  # groq:
+  #   type: openai_compatible
+  #   default_model: llama-3.3-70b-versatile
+  #   base_url: https://api.groq.com/openai/v1
+  #   # api_key: ...  (or set GROQ_API_KEY env var)
+
+  # nvidia:
+  #   type: openai_compatible
+  #   default_model: meta/llama-3.3-70b-instruct
+  #   base_url: https://integrate.api.nvidia.com/v1
+  #   # api_key: nvapi-...  (or set NVIDIA_API_KEY env var)
+
+  # google:
+  #   type: openai_compatible
+  #   default_model: gemini-2.0-flash
+  #   base_url: https://generativelanguage.googleapis.com/v1beta/openai
+  #   # api_key: ...  (or set GOOGLE_API_KEY env var)
+
+  # lmstudio:
+  #   type: openai_compatible
+  #   default_model: your-loaded-model-name
+  #   base_url: http://localhost:1234/v1
+  #   # no api_key needed
+
+  # jan:
+  #   type: openai_compatible
+  #   default_model: your-loaded-model-name
+  #   base_url: http://localhost:1337/v1
+  #   # no api_key needed
+
 # Per-agent provider overrides (optional)
 # agent_providers:
 #   ideator: anthropic

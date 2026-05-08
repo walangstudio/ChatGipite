@@ -27,7 +27,8 @@ echo.
 echo Options:
 echo   -c, --client TYPE   MCP client: claudedesktop, claude, cursor, windsurf,
 echo                       vscode, gemini, codex, zed, kilo, opencode, goose,
-echo                       pidev, all  (default: claudedesktop)
+echo                       pidev, skill, all  (default: claudedesktop)
+echo                       "skill" installs to %%USERPROFILE%%\.claude\skills\chatgipite
 echo   -f, --force         Skip prompts, overwrite existing config
 echo   -u, --uninstall     Remove ChatGipite from MCP client config
 echo       --upgrade       Re-run npm install and update MCP config paths
@@ -418,6 +419,7 @@ rem ═════════════════════════�
 :install_all_or_one
 set "_iao_c=%~1"
 if /i "!_iao_c!"=="all" (
+    rem Skill install is opt-in (-c skill). "all" = MCP clients only.
     for %%C in (claudedesktop claude kilo opencode goose) do call :install_client %%C
     if exist "!_PARENT!\.cursor\mcp.json" call :install_client cursor
     if exist "!USERPROFILE!\.cursor\mcp.json" call :install_client cursor
@@ -436,7 +438,7 @@ goto :eof
 :uninstall_all_or_one
 set "_uao_c=%~1"
 if /i "!_uao_c!"=="all" (
-    for %%C in (claudedesktop claude cursor windsurf vscode gemini codex zed kilo opencode goose) do call :uninstall_client %%C
+    for %%C in (claudedesktop claude cursor windsurf vscode gemini codex zed kilo opencode goose skill) do call :uninstall_client %%C
 ) else (
     call :uninstall_client !_uao_c!
 )
@@ -533,6 +535,26 @@ if /i "!_C!"=="pidev" (
     echo   See: https://pi.dev/docs/extensions
     goto :eof
 )
+if /i "!_C!"=="skill" (
+    set "_SKILL_SRC=!APP_DIR!\skill"
+    set "_SKILL_DEST=!USERPROFILE!\.claude\skills\chatgipite"
+    if not exist "!_SKILL_SRC!" (
+        echo   ERROR: skill\ directory missing in !APP_DIR! >&2
+        goto :eof
+    )
+    if not exist "!USERPROFILE!\.claude\skills" mkdir "!USERPROFILE!\.claude\skills" >nul 2>&1
+    if exist "!_SKILL_DEST!" rmdir /S /Q "!_SKILL_DEST!" >nul 2>&1
+    mklink /J "!_SKILL_DEST!" "!_SKILL_SRC!" >nul
+    if errorlevel 1 (
+        echo   ERROR: Could not create junction at !_SKILL_DEST!. >&2
+        echo   Junctions normally do not require admin. Verify the destination is writable >&2
+        echo   and not on a network share or filesystem that disallows junctions. >&2
+        goto :eof
+    )
+    echo   OK: Skill installed: !_SKILL_DEST! -^> !_SKILL_SRC!
+    echo   Note: set CHATGIPITE_HOME=!APP_DIR! if you move the skill or repo.
+    goto :eof
+)
 echo   ERROR: Unknown client: !_C! >&2
 goto :eof
 
@@ -583,6 +605,14 @@ if /i "!_C!"=="goose" (
     if exist "!GOOSE_CONFIG!" node "!JS_REMOVE_GS!" "!GOOSE_CONFIG!" & goto :eof
     goto :eof
 )
+if /i "!_C!"=="skill" (
+    set "_SKILL_DEST=!USERPROFILE!\.claude\skills\chatgipite"
+    if exist "!_SKILL_DEST!" (
+        rmdir /S /Q "!_SKILL_DEST!" >nul 2>&1
+        echo   OK: Removed skill: !_SKILL_DEST!
+    )
+    goto :eof
+)
 echo   ERROR: Unknown client: !_C! >&2
 goto :eof
 
@@ -625,6 +655,12 @@ echo   ------------------------------------------------------------------------
 echo   Client               Installed  Config path
 echo   ------------------------------------------------------------------------
 node "!JS_STATUS!"
+set "_SKILL_DEST=!USERPROFILE!\.claude\skills\chatgipite"
+if exist "!_SKILL_DEST!" (
+    echo    skill ^(Claude Code^)   YES  !_SKILL_DEST!
+) else (
+    echo    skill ^(Claude Code^)   NO
+)
 echo   ------------------------------------------------------------------------
 if not "!INSTALLED_VERSION!"=="" (
     echo   Package: v!INSTALLED_VERSION! installed

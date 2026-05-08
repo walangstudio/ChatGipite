@@ -33,7 +33,7 @@ providers:
 
   # nvidia:
   #   type: openai_compatible
-  #   default_model: meta/llama-3.3-70b-instruct
+  #   default_model: qwen/qwen3.5-397b-a17b   # recommended; meta/llama-3.3-70b-instruct also available but lower quality on structured tasks
   #   base_url: https://integrate.api.nvidia.com/v1
   #   # api_key: nvapi-...  (or set NVIDIA_API_KEY env var)
 

@@ -9,7 +9,7 @@
           "sector": { "type": "string", "description": "Industry or sector (e.g. healthtech, edtech, fintech, SaaS, consumer)" },
           "problem": { "type": "string", "description": "A problem or pain point to build around" },
           "constraints": { "type": "string", "description": "Constraints like budget, solo founder, B2B only, no-code, etc." },
-          "count": { "type": "number", "description": "Number of ideas to generate (default: 1)" }
+          "count": { "type": "integer", "minimum": 1, "maximum": 10, "default": 1, "description": "Number of ideas to generate (1-10, default: 1)" }
         }
       }
     },
@@ -19,7 +19,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to validate" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to validate" },
           "context": { "type": "string", "description": "Additional context about the idea, target market, or constraints" }
         },
         "required": ["idea"]
@@ -31,7 +31,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to score" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to score" },
           "context": { "type": "string", "description": "Additional context" }
         },
         "required": ["idea"]
@@ -43,7 +43,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea (e.g. ai-meal-planning)" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea (lowercase letters, digits, hyphens only; e.g. ai-meal-planning)" }
         },
         "required": ["idea_slug"]
       }
@@ -54,7 +54,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -65,9 +65,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "style": { "type": "string", "description": "Naming style: coined, descriptive, metaphor, acronym, portmanteau" },
-          "count": { "type": "number", "description": "Number of names to generate (default: 8)" }
+          "count": { "type": "integer", "minimum": 1, "maximum": 20, "default": 8, "description": "Number of names to generate (1-20, default: 8)" }
         },
         "required": ["idea_slug"]
       }
@@ -78,7 +78,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "description": "Business name to check (e.g. NutriAI, Validea)" }
+          "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Business name to check (e.g. NutriAI, Validea)" }
         },
         "required": ["name"]
       }
@@ -89,7 +89,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
         },
         "required": ["idea_slug"]
@@ -101,7 +101,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "assumptions": {
             "type": "object",
             "description": "Override assumptions",
@@ -123,7 +123,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -134,7 +134,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to fully analyze" },
           "sector": { "type": "string", "description": "Optional sector context" },
           "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
         },
@@ -147,7 +147,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "geography": { "type": "string", "description": "Geographic scope (e.g. US, Global, APAC, Europe)" }
         },
         "required": ["idea_slug"]
@@ -159,7 +159,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "segment_focus": { "type": "string", "description": "Optional: focus on a specific segment (e.g. SMB, enterprise, consumers)" }
         },
         "required": ["idea_slug"]
@@ -171,8 +171,8 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
-          "horizon": { "type": "string", "description": "Analysis horizon: 1yr, 3yr, or 5yr (default: 3yr)" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
+          "horizon": { "type": "string", "enum": ["1yr", "3yr", "5yr"], "default": "3yr", "description": "Analysis horizon (default: 3yr)" }
         },
         "required": ["idea_slug"]
       }
@@ -183,7 +183,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -194,7 +194,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "model_preference": { "type": "string", "description": "Optional pricing model preference (e.g. usage-based, seat-based, freemium)" }
         },
         "required": ["idea_slug"]
@@ -206,7 +206,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "stage": { "type": "string", "description": "Current stage: pre-launch, launched, or scaling" }
         },
         "required": ["idea_slug"]
@@ -218,7 +218,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "persona": { "type": "string", "description": "Optional: focus on a specific persona (references personas artifact if available)" }
         },
         "required": ["idea_slug"]
@@ -230,7 +230,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
         },
         "required": ["idea_slug"]
@@ -242,7 +242,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "assumptions": {
             "type": "object",
             "description": "Override base-case assumptions",
@@ -264,7 +264,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -275,7 +275,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "target_markets": { "type": "string", "description": "Optional: specific markets to analyze (e.g. EU, APAC, LATAM)" }
         },
         "required": ["idea_slug"]
@@ -287,7 +287,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -298,7 +298,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to fully analyze" },
           "sector": { "type": "string", "description": "Optional sector context" },
           "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
         },
@@ -311,8 +311,8 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "query": { "type": "string", "description": "Search query" },
-          "limit": { "type": "number", "description": "Max results (default: 10)" },
+          "query": { "type": "string", "minLength": 1, "description": "Search query" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "Max results (1-50, default: 10)" },
           "type": { "type": "string", "description": "Filter by type: ideas, validations, financials, playbooks, names, tam, personas, trends, swot, pricing, gtm, journey, landscape, model, risks, expansion, synthesis" }
         },
         "required": ["query"]

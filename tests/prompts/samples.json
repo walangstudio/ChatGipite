@@ -1,0 +1,45 @@
+{
+  "samples": [
+    {
+      "slug": "ai-legal-triage",
+      "idea": "AI-powered intake and triage assistant for SMB legal practices",
+      "context": "Target: solo and 2-10 attorney firms drowning in incoming inquiries. Replaces manual intake forms and paralegal triage."
+    },
+    {
+      "slug": "refurbished-ebikes",
+      "idea": "Subscription marketplace for refurbished e-bikes",
+      "context": "Target: urban commuters in EU + US cities who want car-replacement transport but can't afford a new e-bike. Includes maintenance, swap-out, and theft protection."
+    },
+    {
+      "slug": "podcaster-automation",
+      "idea": "Workflow automation tool for indie podcasters",
+      "context": "Target: solo podcasters with 50-5000 weekly listeners managing edits, show notes, distribution, and sponsor invoicing manually. Sweet spot: 1-3 episodes per week."
+    }
+  ],
+  "agents": [
+    {
+      "id": "ideator",
+      "task_template": "Generate 3 original, differentiated business ideas adjacent to: \"{idea}\". Use the structured brief format. Context: {context}"
+    },
+    {
+      "id": "validator",
+      "task_template": "Perform a full viability analysis on this business idea: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "financial-analyst",
+      "task_template": "Build a financial model for the business idea: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "market-analyst",
+      "task_template": "Analyze the competitive landscape for: \"{idea}\". Identify direct/indirect competitors, gaps, and differentiation. Context: {context}"
+    },
+    {
+      "id": "gtm-strategist",
+      "task_template": "Create a go-to-market strategy with beachhead segment, channel plan, and launch roadmap for: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "competitive-intelligence",
+      "task_template": "Produce a deep competitive intelligence analysis with funding trajectories, moat assessment, white-space map, and positioning grid for: \"{idea}\". Context: {context}"
+    }
+  ]
+}

@@ -218,7 +218,11 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 ### Presentation & execution
 | Tool | Output |
 |------|--------|
-| `biz_canvas` | Business Model Canvas (all 9 blocks) |
+| `biz_canvas` | Strategy canvas; `canvas_type`: bmc (default) / lean / vpc / mission / ai-platform |
+| `biz_lean_canvas` | Lean Canvas (Running Lean 3rd ed) — best for unproven ideas |
+| `biz_value_prop` | Value Proposition Canvas (jobs/pains/gains ↔ value map) |
+| `biz_mission_canvas` | Mission Model Canvas (mission-driven / non-profit / gov) |
+| `biz_ai_canvas` | AI Canvas + Platform Canvas (model-core or multi-sided) |
 | `biz_pitchdeck` | 10-slide pitch deck content |
 | `biz_playbook` | 30/60/90-day execution plan with milestones, KPIs, risk flags |
 | `biz_name` | Name candidates with live domain and social availability check |

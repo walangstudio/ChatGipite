@@ -42,7 +42,15 @@ node scripts/check-name.mjs "Velora" --tlds com,io,ai --socials x,github --json
 npm run check-name -- "Velora"
 ```
 
-## 5. Recall prior work
+## 5. Canvases (pick the one the founder uses)
+
+```bash
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_canvas '{"idea_slug":"refurbished-e-bike-marketplace","canvas_type":"lean"}'
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_value_prop '{"idea_slug":"refurbished-e-bike-marketplace"}'
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_mission_canvas '{"idea_slug":"refurbished-e-bike-marketplace"}'
+```
+
+## 6. Recall prior work
 
 ```bash
 node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_recall '{"query":"e-bike pricing","limit":5}'

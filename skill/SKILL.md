@@ -23,7 +23,11 @@ The script auto-detects the ChatGipite installation via `CHATGIPITE_HOME` env va
 - `biz_generate` — `{"sector"?, "problem"?, "constraints"?, "count"?:1}` → idea briefs
 - `biz_validate` — `{"idea", "context"?}` → viability report + ICE; saves `brief.md`
 - `biz_ice_score` — `{"idea", "context"?}` → ICE only
-- `biz_canvas` — `{"idea_slug"}` → Business Model Canvas
+- `biz_canvas` — `{"idea_slug", "canvas_type"?:"bmc|lean|vpc|mission|ai-platform"}` → strategy canvas (default bmc)
+- `biz_lean_canvas` — `{"idea_slug"}` → Lean Canvas (unproven ideas)
+- `biz_value_prop` — `{"idea_slug"}` → Value Proposition Canvas
+- `biz_mission_canvas` — `{"idea_slug"}` → Mission Model Canvas
+- `biz_ai_canvas` — `{"idea_slug"}` → AI / Platform Canvas
 - `biz_pitchdeck` — `{"idea_slug"}` → 10-slide deck
 - `biz_competitors` — `{"idea_slug", "market"?}` → direct/indirect comp analysis
 - `biz_financials` — `{"idea_slug", "assumptions"?}` → unit economics + 12-mo P&L

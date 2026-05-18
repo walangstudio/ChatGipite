@@ -39,11 +39,56 @@
     },
     {
       "name": "biz_canvas",
-      "description": "Generate a complete Business Model Canvas (all 9 blocks) for a saved idea slug.",
+      "description": "Generate a strategy canvas for a saved idea. canvas_type selects: bmc (Business Model Canvas, default — for funded/operating), lean (Lean Canvas, Running Lean 3rd ed — for unproven ideas), vpc (Value Proposition Canvas — demand-side fit), mission (Mission Model Canvas — mission-driven/non-profit), ai-platform (AI Canvas + Platform Canvas — model-core or multi-sided).",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea (lowercase letters, digits, hyphens only; e.g. ai-meal-planning)" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea (lowercase letters, digits, hyphens only; e.g. ai-meal-planning)" },
+          "canvas_type": { "type": "string", "enum": ["bmc", "lean", "vpc", "mission", "ai-platform"], "default": "bmc", "description": "Which canvas to produce (default: bmc)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_lean_canvas",
+      "description": "Lean Canvas (Running Lean 3rd ed): Problem (+Existing Alternatives) → Customer Segments (+Early Adopters) → UVP (+High-Level Concept) → Solution → Channels → Revenue → Cost → Key Metrics (Customer Factory) → Unfair Advantage. Best for unproven, pre-revenue ideas.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_value_prop",
+      "description": "Value Proposition Canvas: customer profile (jobs/pains/gains) mapped to value map (products/pain relievers/gain creators) per priority segment, plus a problem–solution fit assessment. Pulls personas if available.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_mission_canvas",
+      "description": "Mission Model Canvas: BMC variant for mission-driven, non-profit, or government ventures (beneficiaries, buy-in/support, deployment, mission budget, impact factors instead of revenue/profit).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_ai_canvas",
+      "description": "AI Canvas (prediction, judgment, action, outcome, input, training data, feedback loop) and/or Platform Canvas (sides, value unit, network effects, chicken-and-egg, governance) for model-core or multi-sided-market ideas.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }

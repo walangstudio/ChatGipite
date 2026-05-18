@@ -222,7 +222,7 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 | `biz_pitchdeck` | 10-slide pitch deck content |
 | `biz_playbook` | 30/60/90-day execution plan with milestones, KPIs, risk flags |
 | `biz_name` | Name candidates with live domain and social availability check |
-| `biz_name_check` | Availability check for a specific name (.com DNS, Instagram, LinkedIn, TikTok) |
+| `biz_name_check` | Availability check for a name: domains via RDAP→WHOIS→DNS (com/io/ai/co/app/dev/net/org) + 9 socials (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads). Also a standalone CLI: `node scripts/check-name.mjs "Name"` |
 | `biz_synthesis` | Executive brief: conviction score (1-10), 5 key decisions, 90-day action roadmap |
 
 ### Pipelines

@@ -9,6 +9,8 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 - **Standalone CLI** `scripts/check-name.mjs` + `npm run check-name`: brand-name checks without MCP/skill. `--tlds`, `--socials`, `--json` flags.
 - **`biz_name_check`** accepts optional `tlds` and `socials` filters.
 - **Canvas suite**: new `canvas-strategist` subagent. `biz_canvas` now takes `canvas_type` (bmc default / lean / vpc / mission / ai-platform). New tools `biz_lean_canvas`, `biz_value_prop`, `biz_mission_canvas`, `biz_ai_canvas`. Lean Canvas follows Running Lean 3rd ed (sub-fields + prescribed fill order + Customer Factory metrics).
+- **Strategy / fast-launch tools**: subagents `north-star-architect`, `incubation-coach`, `working-backwards-writer`, `mvp-scoper`. Tools `biz_north_star`, `biz_rice_score`, `biz_assumptions`, `biz_prfaq`, `biz_mvp`.
+- **Incubation + launch pipelines**: `workflows/incubation.md` (`biz_incubate`: validate → assumptions/Test Card → Lean+VPC+North Star → MVP → pivot/persevere) and `workflows/launch-sprint.md` (`biz_launch_sprint`: validate → PR/FAQ → MVP → GTM → checklist). 36 tools total.
 
 ### Changed
 - `biz_name_check` / `biz_name` result shape: `domain` (single) → `domains` (array, one per TLD). Output tables widened.

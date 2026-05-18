@@ -228,12 +228,19 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 | `biz_name` | Name candidates with live domain and social availability check |
 | `biz_name_check` | Availability check for a name: domains via RDAP→WHOIS→DNS (com/io/ai/co/app/dev/net/org) + 9 socials (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads). Also a standalone CLI: `node scripts/check-name.mjs "Name"` |
 | `biz_synthesis` | Executive brief: conviction score (1-10), 5 key decisions, 90-day action roadmap |
+| `biz_north_star` | North Star Metric + input model + Customer Factory + guardrails |
+| `biz_rice_score` | RICE prioritization (Reach × Impact × Confidence / Effort) |
+| `biz_assumptions` | Riskiest-assumption map + Test Card (hypothesis/metric/threshold/timebox) |
+| `biz_prfaq` | Working-Backwards press release + internal/customer FAQ |
+| `biz_mvp` | Smallest MVP scope to test the riskiest assumption |
 
 ### Pipelines
 | Tool | Output |
 |------|--------|
 | `biz_full_run` | 7-step pipeline: validate → competitors → financials → canvas → pitchdeck → playbook → names |
 | `biz_deep_run` | 15-step workflow + names: validate → personas → trends → market → TAM → financials → model → SWOT → pricing → GTM → journey → risks → landscape → expansion → synthesis → names |
+| `biz_incubate` | Incubation loop: validate → assumptions → lean canvas + value-prop + north star → MVP → pivot/persevere decision |
+| `biz_launch_sprint` | Working-Backwards launch: validate → PR/FAQ → MVP → GTM → launch checklist |
 | `biz_recall` | Full-text search across all stored analyses |
 
 ## Typical Flow
@@ -252,8 +259,10 @@ biz_playbook    {idea_slug: "ai-triage-assistant-for-rural-clinics"}
 
 Full pipeline in one call:
 ```
-biz_full_run  {idea: "AI triage assistant for rural clinics"}
-biz_deep_run  {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
+biz_full_run      {idea: "AI triage assistant for rural clinics"}
+biz_deep_run      {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
+biz_incubate      {idea: "AI triage assistant for rural clinics"}   ← lean incubation loop (7 artifacts)
+biz_launch_sprint {idea: "AI triage assistant for rural clinics"}   ← Working-Backwards launch (5 artifacts)
 ```
 
 ## Artifacts

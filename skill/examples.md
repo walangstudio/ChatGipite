@@ -50,7 +50,15 @@ node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_value_prop '{"idea_slug":"refu
 node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_mission_canvas '{"idea_slug":"refurbished-e-bike-marketplace"}'
 ```
 
-## 6. Recall prior work
+## 6. Incubate fast / launch sprint
+
+```bash
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_incubate '{"idea":"On-demand EV charging van for apartment dwellers","sector":"mobility"}'
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_launch_sprint '{"idea":"On-demand EV charging van for apartment dwellers"}'
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_rice_score '{"idea":"On-demand EV charging van","context":"vs building fixed chargers"}'
+```
+
+## 7. Recall prior work
 
 ```bash
 node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_recall '{"query":"e-bike pricing","limit":5}'

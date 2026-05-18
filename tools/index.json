@@ -353,6 +353,88 @@
       }
     },
     {
+      "name": "biz_north_star",
+      "description": "Define one North Star Metric (customer-value, not vanity) plus its input model, Customer Factory leading indicators, and anti-gaming guardrails for a saved idea.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_rice_score",
+      "description": "Compute a RICE prioritization score (Reach × Impact × Confidence / Effort) with rationale per input and a verdict vs a typical alternative. Complements biz_ice_score for portfolio/roadmap calls.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea or initiative to score" },
+          "context": { "type": "string", "description": "Additional context (reach data, alternatives, constraints)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_assumptions",
+      "description": "Rank the riskiest (most fatal × most uncertain) assumptions and produce a Test Card (hypothesis, cheapest experiment, metric, numeric pass threshold, timebox) for a saved idea.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_prfaq",
+      "description": "Amazon Working-Backwards: a launch press release + internal/customer FAQ written before building, to force clarity on customer and value.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_mvp",
+      "description": "Scope the smallest MVP (concierge / wizard-of-oz / fake-door / single-feature / manual-first) that tests the riskiest assumption, with in-scope vs cut and a numeric success metric.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_incubate",
+      "description": "Incubation pipeline: validate → assumptions/Test Card → Lean Canvas + Value Proposition Canvas + North Star (parallel) → MVP scope → pivot/persevere decision. Saves 7 artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to incubate" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_launch_sprint",
+      "description": "Working-Backwards launch sprint: validate → PR/FAQ → MVP scope → GTM → launch checklist. Saves 5 artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to take to launch" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
       "name": "biz_recall",
       "description": "Full-text search across all stored ideas, analyses, and artifacts.",
       "inputSchema": {

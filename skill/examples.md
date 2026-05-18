@@ -32,6 +32,14 @@ node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_full_run '{"idea":"Subscriptio
 ```bash
 node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_name '{"idea_slug":"refurbished-e-bike-marketplace","style":"coined","count":8}'
 node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_name_check '{"name":"Velora"}'
+node ${CLAUDE_SKILL_DIR}/scripts/run-tool.mjs biz_name_check '{"name":"Velora","tlds":["com","io","ai"],"socials":["x","github","instagram"]}'
+```
+
+Standalone CLI (no MCP/skill needed, runs anywhere Node ≥20 runs):
+
+```bash
+node scripts/check-name.mjs "Velora" --tlds com,io,ai --socials x,github --json
+npm run check-name -- "Velora"
 ```
 
 ## 5. Recall prior work

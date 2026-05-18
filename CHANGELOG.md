@@ -2,6 +2,16 @@
 
 All notable changes to ChatGipite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Brand-name checker rewrite** (`lib/name-checker.js`): domain availability now resolves RDAP → WHOIS → DNS instead of bare `dns.lookup` (which gave false available/taken on registered-but-unparked domains). Multi-TLD (default com,io,ai,co,app,dev,net,org). Socials expanded 4 → 9 (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads); 403/429/451 reported as bot-squat/blocked, never a hard "taken".
+- **Standalone CLI** `scripts/check-name.mjs` + `npm run check-name`: brand-name checks without MCP/skill. `--tlds`, `--socials`, `--json` flags.
+- **`biz_name_check`** accepts optional `tlds` and `socials` filters.
+
+### Changed
+- `biz_name_check` / `biz_name` result shape: `domain` (single) → `domains` (array, one per TLD). Output tables widened.
+
 ## [0.3.0] - 2026-05-08
 
 ### Added

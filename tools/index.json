@@ -74,11 +74,13 @@
     },
     {
       "name": "biz_name_check",
-      "description": "Check availability of a business name: .com domain (DNS), Twitter/X handle, Instagram handle, LinkedIn company page.",
+      "description": "Check brand-name availability: domains via RDAP→WHOIS→DNS (default com,io,ai,co,app,dev,net,org) and social handles (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads).",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Business name to check (e.g. NutriAI, Validea)" }
+          "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Business name to check (e.g. NutriAI, Validea)" },
+          "tlds": { "type": "array", "items": { "type": "string" }, "description": "TLDs to check without dots (e.g. [\"com\",\"io\",\"ai\"]). Defaults to com,io,ai,co,app,dev,net,org." },
+          "socials": { "type": "array", "items": { "type": "string" }, "description": "Socials to check: x, instagram, tiktok, linkedin, github, youtube, facebook, reddit, threads, or [\"all\"]. Defaults to all." }
         },
         "required": ["name"]
       }

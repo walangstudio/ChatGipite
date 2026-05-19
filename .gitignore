@@ -10,6 +10,7 @@ db/
 # Generated artifacts (user data, not source)
 ideas/
 reports/
+tests/results/
 
 # Install marker
 .chatgipite-installed

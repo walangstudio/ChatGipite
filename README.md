@@ -2,13 +2,26 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-![version](https://img.shields.io/badge/version-0.2.0-blue)
+![version](https://img.shields.io/badge/version-0.4.0-blue)
 ![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 Business idea generation, validation, and execution planning as an MCP server. Runs a full pipeline from raw idea to financial model, pitch deck, and go-to-market playbook — all stored locally per idea.
+
+## Claude Code: install as a skill (recommended)
+
+Skills load on demand — ~50 tokens of overhead until invoked, vs ~5–8K for the full MCP server. For Claude Code users, this is the lightest option.
+
+```bash
+./install.sh -c skill        # macOS / Linux / Git Bash
+install.bat -c skill         REM Windows (admin shell needed for junction)
+```
+
+Installs to `~/.claude/skills/chatgipite/` as a symlink/junction back to this repo. Updating the repo updates the skill in place. Inside Claude Code, just ask: *"validate this idea: …"* — the skill is auto-discovered and dispatches to the same handler code as the MCP server.
+
+For non-Claude-Code clients (Cursor, Zed, Gemini CLI, Codex, etc.), keep using the MCP install paths below. Both can coexist.
 
 ## Quick Start
 
@@ -18,6 +31,7 @@ cd ChatGipite
 ./install.sh                              # Claude Desktop
 ./install.sh -c claude                    # Claude Code (workspace-local)
 ./install.sh -c claude --global           # Claude Code (global user config)
+./install.sh -c skill                     # Claude Code skill (recommended for Claude Code)
 ./install.sh -c cursor                    # Cursor (workspace-local)
 ./install.sh -c cursor --global           # Cursor (global)
 ./install.sh -c windsurf                  # Windsurf (global only)
@@ -31,7 +45,7 @@ cd ChatGipite
 ./install.sh -c opencode                  # OpenCode (workspace-local)
 ./install.sh -c opencode --global         # OpenCode (global)
 ./install.sh -c goose                     # Goose
-./install.sh -c all                       # all detected clients
+./install.sh -c all                       # all detected MCP clients (skill is opt-in)
 ```
 
 **Windows (Command Prompt / PowerShell):**
@@ -40,6 +54,7 @@ cd ChatGipite
 install.bat                               REM Claude Desktop
 install.bat -c claude                     REM Claude Code (workspace-local)
 install.bat -c claude --global            REM Claude Code (global user config)
+install.bat -c skill                      REM Claude Code skill (recommended for Claude Code)
 install.bat -c cursor                     REM Cursor (workspace-local)
 install.bat -c cursor --global            REM Cursor (global)
 install.bat -c windsurf                   REM Windsurf (global only)
@@ -53,7 +68,7 @@ install.bat -c kilo                       REM Kilo Code
 install.bat -c opencode                   REM OpenCode (workspace-local)
 install.bat -c opencode --global          REM OpenCode (global)
 install.bat -c goose                      REM Goose
-install.bat -c all                        REM all detected clients
+install.bat -c all                        REM all detected MCP clients (skill is opt-in)
 ```
 
 The installer runs `npm install`, writes the MCP config entry, and validates the server.
@@ -74,13 +89,14 @@ The installer runs `npm install`, writes the MCP config entry, and validates the
 | OpenCode | `opencode` | `opencode.json` / `~/.config/opencode/opencode.json` | Use `--global` for global |
 | Goose | `goose` | `~/.config/goose/config.yaml` | Global only |
 | pi.dev | `pidev` | n/a | Prints manual instructions; no auto-config |
+| Claude Code skill | `skill` | `~/.claude/skills/chatgipite/` (symlink) | Lowest context cost; Claude Code only |
 | All above | `all` | All detected existing configs | Skips clients not yet installed |
 
 ## Installer Flags
 
 ```
   -c, --client TYPE   claudedesktop, claude, cursor, windsurf, vscode, gemini, codex,
-                      zed, kilo, opencode, goose, pidev, all  (default: claudedesktop)
+                      zed, kilo, opencode, goose, pidev, skill, all  (default: claudedesktop)
   -f, --force         Skip prompts, overwrite existing config
   -u, --uninstall     Remove from MCP client config
       --upgrade       Upgrade deps and reconfigure (alias: --update)
@@ -124,13 +140,9 @@ node server.js   # verify it starts, then Ctrl+C
 No API key required for fully local use — set `default_provider: ollama` in `config/providers.yaml`.
 For Anthropic/Claude: `export ANTHROPIC_API_KEY=sk-ant-...`
 
-Add ChatGipite to your MCP client config (use absolute paths):
+Add ChatGipite to your MCP client config (use absolute paths).
 
-### Claude Desktop
-
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Linux:** `~/.config/Claude/claude_desktop_config.json`
+Most clients use the same `mcpServers` JSON — add this block to the config file for your client:
 
 ```json
 {
@@ -143,184 +155,29 @@ Add ChatGipite to your MCP client config (use absolute paths):
 }
 ```
 
-### Claude Code
+| Client | Config file |
+|--------|-------------|
+| Claude Desktop | `%APPDATA%\Claude\claude_desktop_config.json` (Win) · `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) · `~/.config/Claude/claude_desktop_config.json` (Linux) |
+| Claude Code | `.mcp.json` (workspace) or `~/.claude.json` (global) |
+| Cursor | `.cursor/mcp.json` (workspace) or `~/.cursor/mcp.json` (global) |
+| Windsurf | `~/.codeium/windsurf/mcp_config.json` |
+| Gemini CLI | `.gemini/settings.json` (workspace) or `~/.gemini/settings.json` (global) |
+| Kilo Code | `.kilocode/mcp.json` |
 
-Workspace-local (`.mcp.json` in your project root):
-```json
-{
-  "mcpServers": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-Global user scope:
+**Claude Code global (CLI):**
 ```bash
 claude mcp add --scope user chatgipite -- node /absolute/path/to/ChatGipite/server.js
 ```
 
-### Cursor
+**Clients with different config format** — use the same `command`/`args` values, different structure:
 
-`.cursor/mcp.json` (workspace) or `~/.cursor/mcp.json` (global):
-```json
-{
-  "mcpServers": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-### Windsurf
-
-`~/.codeium/windsurf/mcp_config.json`:
-```json
-{
-  "mcpServers": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-### VS Code
-
-`.vscode/mcp.json` in your workspace root (note: VS Code uses `servers`, not `mcpServers`):
-```json
-{
-  "servers": {
-    "chatgipite": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-For user-level config, add via VS Code Settings UI under `mcp.servers`.
-
-### Gemini CLI
-
-`.gemini/settings.json` (workspace) or `~/.gemini/settings.json` (global):
-```json
-{
-  "mcpServers": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-### OpenAI Codex CLI
-
-`.codex/config.toml` (workspace) or `~/.codex/config.toml` (global):
-```toml
-[mcp_servers.chatgipite]
-command = "node /absolute/path/to/ChatGipite/server.js"
-startup_timeout_sec = 30
-tool_timeout_sec = 300
-enabled = true
-```
-
-### Zed
-
-`~/.config/zed/settings.json`:
-```json
-{
-  "context_servers": {
-    "chatgipite": {
-      "command": {
-        "path": "node",
-        "args": ["/absolute/path/to/ChatGipite/server.js"],
-        "env": {}
-      }
-    }
-  }
-}
-```
-
-### Kilo Code
-
-`.kilocode/mcp.json` in your workspace root:
-```json
-{
-  "mcpServers": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-### OpenCode
-
-`opencode.json` (workspace) or `~/.config/opencode/opencode.json` (global):
-```json
-{
-  "mcp": {
-    "chatgipite": {
-      "command": "node",
-      "args": ["/absolute/path/to/ChatGipite/server.js"]
-    }
-  }
-}
-```
-
-### Goose
-
-`~/.config/goose/config.yaml`:
-```yaml
-extensions:
-  chatgipite:
-    type: stdio
-    cmd: node
-    args:
-      - /absolute/path/to/ChatGipite/server.js
-    enabled: true
-```
-
-### pi.dev
-
-pi.dev does not support MCP servers natively. It uses TypeScript extensions instead. Add a minimal bridge:
-
-```typescript
-// ~/.pi/extensions/chatgipite-bridge.ts
-import { Extension } from "@pi-dev/sdk";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-
-export default class ChatGipiteBridge extends Extension {
-  name = "chatgipite";
-
-  async activate() {
-    const transport = new StdioClientTransport({
-      command: "node",
-      args: ["/absolute/path/to/ChatGipite/server.js"],
-    });
-    const client = new Client({ name: "chatgipite-bridge", version: "1.0.0" }, {});
-    await client.connect(transport);
-    this.registerMcpClient(client);
-  }
-}
-```
-
-Register in `~/.pi/agent/settings.json`:
-```json
-{
-  "extensions": ["~/.pi/extensions/chatgipite-bridge.ts"]
-}
-```
+| Client | Config file | Key difference |
+|--------|-------------|----------------|
+| VS Code | `.vscode/mcp.json` | Top-level key is `servers` (not `mcpServers`), add `"type": "stdio"` |
+| Zed | `~/.config/zed/settings.json` | Top-level key is `context_servers`, command is nested: `{ "path": ..., "args": ..., "env": {} }` |
+| OpenAI Codex | `.codex/config.toml` | TOML format: `[mcp_servers.chatgipite]`, `command = "node /absolute/path/to/ChatGipite/server.js"` |
+| OpenCode | `opencode.json` or `~/.config/opencode/opencode.json` | Top-level key is `mcp` (not `mcpServers`) |
+| Goose | `~/.config/goose/config.yaml` | YAML format: under `extensions`, uses `cmd`/`args`/`type: stdio`/`enabled: true` |
 
 On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client after editing any config.
 
@@ -361,18 +218,29 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 ### Presentation & execution
 | Tool | Output |
 |------|--------|
-| `biz_canvas` | Business Model Canvas (all 9 blocks) |
+| `biz_canvas` | Strategy canvas; `canvas_type`: bmc (default) / lean / vpc / mission / ai-platform |
+| `biz_lean_canvas` | Lean Canvas (Running Lean 3rd ed) — best for unproven ideas |
+| `biz_value_prop` | Value Proposition Canvas (jobs/pains/gains ↔ value map) |
+| `biz_mission_canvas` | Mission Model Canvas (mission-driven / non-profit / gov) |
+| `biz_ai_canvas` | AI Canvas + Platform Canvas (model-core or multi-sided) |
 | `biz_pitchdeck` | 10-slide pitch deck content |
 | `biz_playbook` | 30/60/90-day execution plan with milestones, KPIs, risk flags |
 | `biz_name` | Name candidates with live domain and social availability check |
-| `biz_name_check` | Availability check for a specific name (.com DNS, Instagram, LinkedIn, TikTok) |
+| `biz_name_check` | Availability check for a name: domains via RDAP→WHOIS→DNS (com/io/ai/co/app/dev/net/org) + 9 socials (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads). Also a standalone CLI: `node scripts/check-name.mjs "Name"`. Optional: `CHATGIPITE_WMN=1` uses the maintained WhatsMyName signatures (fixes TikTok etc.; `npm run update-wmn` to refresh). `CHATGIPITE_PLAYWRIGHT=1` + `npx playwright install chromium` adds a headless-browser fallback. IG/X stay "verify manually" (login-walled — nothing logged-out resolves them). |
 | `biz_synthesis` | Executive brief: conviction score (1-10), 5 key decisions, 90-day action roadmap |
+| `biz_north_star` | North Star Metric + input model + Customer Factory + guardrails |
+| `biz_rice_score` | RICE prioritization (Reach × Impact × Confidence / Effort) |
+| `biz_assumptions` | Riskiest-assumption map + Test Card (hypothesis/metric/threshold/timebox) |
+| `biz_prfaq` | Working-Backwards press release + internal/customer FAQ |
+| `biz_mvp` | Smallest MVP scope to test the riskiest assumption |
 
 ### Pipelines
 | Tool | Output |
 |------|--------|
 | `biz_full_run` | 7-step pipeline: validate → competitors → financials → canvas → pitchdeck → playbook → names |
 | `biz_deep_run` | 15-step workflow + names: validate → personas → trends → market → TAM → financials → model → SWOT → pricing → GTM → journey → risks → landscape → expansion → synthesis → names |
+| `biz_incubate` | Incubation loop: validate → assumptions → lean canvas + value-prop + north star → MVP → pivot/persevere decision |
+| `biz_launch_sprint` | Working-Backwards launch: validate → PR/FAQ → MVP → GTM → launch checklist |
 | `biz_recall` | Full-text search across all stored analyses |
 
 ## Typical Flow
@@ -391,8 +259,10 @@ biz_playbook    {idea_slug: "ai-triage-assistant-for-rural-clinics"}
 
 Full pipeline in one call:
 ```
-biz_full_run  {idea: "AI triage assistant for rural clinics"}
-biz_deep_run  {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
+biz_full_run      {idea: "AI triage assistant for rural clinics"}
+biz_deep_run      {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
+biz_incubate      {idea: "AI triage assistant for rural clinics"}   ← lean incubation loop (7 artifacts)
+biz_launch_sprint {idea: "AI triage assistant for rural clinics"}   ← Working-Backwards launch (5 artifacts)
 ```
 
 ## Artifacts
@@ -502,7 +372,7 @@ providers:
 
   nvidia:
     type: openai_compatible
-    default_model: meta/llama-3.3-70b-instruct
+    default_model: qwen/qwen3.5-397b-a17b   # recommended on NVIDIA NIM; markedly better than llama-3.3-70b on structured analysis
     base_url: https://integrate.api.nvidia.com/v1
     api_key: nvapi-...   # or set NVIDIA_API_KEY env var
 
@@ -531,10 +401,39 @@ Set `CHATGIPITE_DEBUG=1` to enable verbose logging to `chatgipite.log` in the in
 "env": { "CHATGIPITE_DEBUG": "1", "CHATGIPITE_CONFIG": "/path/to/providers.yaml" }
 ```
 
+### Prompt cache threshold (Anthropic)
+
+`lib/llm-adapter.js` only attaches `cache_control` when the system prompt or context block is ≥ 8192 chars (~2048 tokens, the Sonnet 4.6 minimum). Below that threshold the API silently no-ops the cache header — so smaller prompts won't show `cache_read_input_tokens` in debug logs. This is intentional, not a bug.
+
+## Troubleshooting
+
+**Windows: `fetch failed` / `UNABLE_TO_VERIFY_LEAF_SIGNATURE` against any HTTPS provider.**
+On corporate networks with TLS-intercepting proxies (Zscaler, Netskope, ZTNA), Node's bundled CA store doesn't trust the company root. Run with system CA:
+
+```bat
+set NODE_OPTIONS=--use-system-ca
+```
+
+Or add it to the MCP env block:
+
+```json
+"env": { "NODE_OPTIONS": "--use-system-ca", "ANTHROPIC_API_KEY": "..." }
+```
+
+This pulls in the OS trust store (which already has your corporate root).
+
+## Prompt A/B test harness
+
+`tests/run-ab.mjs` + `tests/judge.mjs` compare current subagent prompts against a frozen pre-modernization baseline and a no-system-prompt vanilla variant. See `tests/README.md`. Requires `ANTHROPIC_API_KEY` for the judge step (~$2-3 per run).
+
 ## Requirements
 
 - Node.js 20+ (Node 24 supported)
 - LLM API key (optional — Ollama works out of the box for fully local use)
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const { checkAvailability, DEFAULT_TLDS, DEFAULT_SOCIALS } = await import(
+const { checkAvailability, mark, DEFAULT_TLDS, DEFAULT_SOCIALS } = await import(
   pathToFileURL(path.resolve(__dirname, '..', 'lib', 'name-checker.js')).href
 );
 
@@ -44,12 +44,12 @@ if (opts.json) {
   process.exit(0);
 }
 
-const mark = (a) => (a === true ? '✅ available' : a === false ? '❌ taken' : '⚠️ unknown');
 const pad = (s, n) => String(s).padEnd(n);
 const out = [`\nBrand: ${result.name}  (handle: ${result.handle})`, ''];
 out.push('Domains');
-for (const d of result.domains) out.push(`  ${pad(d.domain, 28)} ${mark(d.available)}  ${d.status}`);
+for (const d of result.domains) out.push(`  ${pad(d.domain, 28)} ${mark(d.available, true)}  ${d.status}`);
 out.push('', 'Socials');
-for (const s of result.socials) out.push(`  ${pad(s.platform, 28)} ${mark(s.available)}  ${s.status}`);
+for (const s of result.socials) out.push(`  ${pad(s.platform, 28)} ${mark(s.available, true)}  ${s.status}`);
+if (result.unrecognizedSocials?.length) out.push('', `Ignored unrecognized socials: ${result.unrecognizedSocials.join(', ')}`);
 out.push('', `Summary: ${result.summary}`, '');
 process.stdout.write(out.join('\n'));

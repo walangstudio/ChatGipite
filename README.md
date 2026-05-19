@@ -2,7 +2,7 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-![version](https://img.shields.io/badge/version-0.3.0-blue)
+![version](https://img.shields.io/badge/version-0.4.0-blue)
 ![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)

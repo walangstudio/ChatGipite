@@ -2,7 +2,7 @@
 
 All notable changes to ChatGipite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2026-05-20
 
 ### Added
 - **Brand-name checker rewrite** (`lib/name-checker.js`): domain availability now resolves RDAP → WHOIS → DNS instead of bare `dns.lookup` (which gave false available/taken on registered-but-unparked domains). Multi-TLD (default com,io,ai,co,app,dev,net,org). Socials expanded 4 → 9 (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads); 403/429/451 reported as bot-squat/blocked, never a hard "taken".
@@ -12,8 +12,6 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 - **Canvas suite**: new `canvas-strategist` subagent. `biz_canvas` now takes `canvas_type` (bmc default / lean / vpc / mission / ai-platform). New tools `biz_lean_canvas`, `biz_value_prop`, `biz_mission_canvas`, `biz_ai_canvas`. Lean Canvas follows Running Lean 3rd ed (sub-fields + prescribed fill order + Customer Factory metrics).
 - **Strategy / fast-launch tools**: subagents `north-star-architect`, `incubation-coach`, `working-backwards-writer`, `mvp-scoper`. Tools `biz_north_star`, `biz_rice_score`, `biz_assumptions`, `biz_prfaq`, `biz_mvp`.
 - **Incubation + launch pipelines**: `workflows/incubation.md` (`biz_incubate`: validate → assumptions/Test Card → Lean+VPC+North Star → MVP → pivot/persevere) and `workflows/launch-sprint.md` (`biz_launch_sprint`: validate → PR/FAQ → MVP → GTM → checklist). 36 tools total.
-
-### Added
 - **Opt-in WhatsMyName-driven social detection** (`CHATGIPITE_WMN=1`, `lib/wmn.js`). Uses the community-maintained `wmn-data.json` (CC BY-SA 4.0, vendored unmodified at `data/wmn-data.json`, attribution in `data/WHATSMYNAME-ATTRIBUTION.md`, refresh via `npm run update-wmn`) — queries each platform directly with vetted `e_/m_` signatures instead of hand-rolled regexes. Fixes TikTok detection (uses its `oembed` endpoint). Legally clean: no third-party aggregator in the loop. IG/X have no usable WMN entry / stay login-walled → honest "verify manually", never a guess.
 - **Opt-in headless-browser social fallback** (`lib/social-browser.js`, `CHATGIPITE_PLAYWRIGHT=1`, `playwright` optionalDependency + `npx playwright install chromium`). For HEAD-blocked socials it loads the profile in headless Chromium and asserts available/taken **only on hard evidence** (HTTP 404 / explicit not-found / explicit profile marker); a login/anti-bot wall stays "verify manually" — never a guess. IG/X logged-out remain unresolvable (wall), by design honest.
 

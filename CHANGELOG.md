@@ -13,8 +13,12 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 - **Strategy / fast-launch tools**: subagents `north-star-architect`, `incubation-coach`, `working-backwards-writer`, `mvp-scoper`. Tools `biz_north_star`, `biz_rice_score`, `biz_assumptions`, `biz_prfaq`, `biz_mvp`.
 - **Incubation + launch pipelines**: `workflows/incubation.md` (`biz_incubate`: validate → assumptions/Test Card → Lean+VPC+North Star → MVP → pivot/persevere) and `workflows/launch-sprint.md` (`biz_launch_sprint`: validate → PR/FAQ → MVP → GTM → checklist). 36 tools total.
 
+### Fixed
+- **OpenAI-compatible reasoning models**: `dispatchOpenAICompat` only read `message.content`; reasoning models (qwen3.x, deepseek-r1) return the answer in `message.reasoning_content`, so every call silently fell back to passthrough. Now falls back to `reasoning_content`. Verified live against NVIDIA `qwen/qwen3.5-122b-a10b`.
+
 ### Changed
 - `biz_name_check` / `biz_name` result shape: `domain` (single) → `domains` (array, one per TLD). Output tables widened.
+- `config/providers.yaml` NVIDIA example model corrected to a verified id (`qwen/qwen3.5-122b-a10b`); the old `qwen/qwen3.5-397b-a17b` did not exist.
 - **BMC modernized + reassigned**: moved off the generic `writer` agent to `canvas-strategist`; pulls personas/pricing/financials and adds defensibility + cross-checks. `writer` now owns the pitch deck only.
 
 ## [0.3.0] - 2026-05-08

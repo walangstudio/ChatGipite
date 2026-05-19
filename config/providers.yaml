@@ -33,7 +33,7 @@ providers:
 
   # nvidia:
   #   type: openai_compatible
-  #   default_model: qwen/qwen3.5-397b-a17b   # recommended; meta/llama-3.3-70b-instruct also available but lower quality on structured tasks
+  #   default_model: qwen/qwen3.5-122b-a10b   # verified live; a reasoning model (answer in reasoning_content — adapter handles it). meta/llama-3.3-70b-instruct also works, faster, slightly weaker on structured output
   #   base_url: https://integrate.api.nvidia.com/v1
   #   # api_key: nvapi-...  (or set NVIDIA_API_KEY env var)
 

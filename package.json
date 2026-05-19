@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "check-name": "node scripts/check-name.mjs",
+    "update-wmn": "node scripts/update-wmn.mjs",
     "test:ab": "node tests/run-ab.mjs",
     "test:judge": "node tests/judge.mjs"
   },

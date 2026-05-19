@@ -13,7 +13,11 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 - **Strategy / fast-launch tools**: subagents `north-star-architect`, `incubation-coach`, `working-backwards-writer`, `mvp-scoper`. Tools `biz_north_star`, `biz_rice_score`, `biz_assumptions`, `biz_prfaq`, `biz_mvp`.
 - **Incubation + launch pipelines**: `workflows/incubation.md` (`biz_incubate`: validate → assumptions/Test Card → Lean+VPC+North Star → MVP → pivot/persevere) and `workflows/launch-sprint.md` (`biz_launch_sprint`: validate → PR/FAQ → MVP → GTM → checklist). 36 tools total.
 
+### Added
+- **Opt-in headless-browser social fallback** (`lib/social-browser.js`, `CHATGIPITE_PLAYWRIGHT=1`, `playwright` optionalDependency + `npx playwright install chromium`). For HEAD-blocked socials it loads the profile in headless Chromium and asserts available/taken **only on hard evidence** (HTTP 404 / explicit not-found / explicit profile marker); a login/anti-bot wall stays "verify manually" — never a guess. IG/X logged-out remain unresolvable (wall), by design honest.
+
 ### Fixed
+- **False "taken" on Instagram/TikTok**: HEAD returns HTTP 200 for *any* handle on login-walled platforms (IG/TikTok/X/Facebook), so the prior `200 → taken` logic reported every handle as taken. These now return inconclusive → defer to browser fallback or honest "unknown".
 - **`biz_rice_score` emitted a Validation Report, not RICE**: it reused the `validator` agent, whose strong output template overrode the RICE task string. New dedicated `rice-scorer` subagent (Reach/Impact/Confidence/Effort + shown arithmetic + verdict). Verified live via the MCP server on NVIDIA.
 - **OpenAI-compatible reasoning models**: `dispatchOpenAICompat` only read `message.content`; reasoning models (qwen3.x, deepseek-r1) return the answer in `message.reasoning_content`, so every call silently fell back to passthrough. Now falls back to `reasoning_content`. Verified live against NVIDIA `qwen/qwen3.5-122b-a10b`.
 

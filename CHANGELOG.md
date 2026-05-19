@@ -14,6 +14,7 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 - **Incubation + launch pipelines**: `workflows/incubation.md` (`biz_incubate`: validate → assumptions/Test Card → Lean+VPC+North Star → MVP → pivot/persevere) and `workflows/launch-sprint.md` (`biz_launch_sprint`: validate → PR/FAQ → MVP → GTM → checklist). 36 tools total.
 
 ### Fixed
+- **`biz_rice_score` emitted a Validation Report, not RICE**: it reused the `validator` agent, whose strong output template overrode the RICE task string. New dedicated `rice-scorer` subagent (Reach/Impact/Confidence/Effort + shown arithmetic + verdict). Verified live via the MCP server on NVIDIA.
 - **OpenAI-compatible reasoning models**: `dispatchOpenAICompat` only read `message.content`; reasoning models (qwen3.x, deepseek-r1) return the answer in `message.reasoning_content`, so every call silently fell back to passthrough. Now falls back to `reasoning_content`. Verified live against NVIDIA `qwen/qwen3.5-122b-a10b`.
 
 ### Changed

@@ -26,8 +26,9 @@ Usage: ./install.sh [options]
 
 Options:
   -c, --client TYPE   claudedesktop, claude, cursor, windsurf, vscode, gemini,
-                      codex, zed, kilo, opencode, goose, pidev, all
+                      codex, zed, kilo, opencode, goose, pidev, skill, all
                       (default: claudedesktop)
+                      "skill" installs to ~/.claude/skills/chatgipite (Claude Code only)
   -f, --force         Skip prompts, overwrite existing config
   -u, --uninstall     Remove ChatGipite from MCP client config
       --upgrade       Re-run npm install and update MCP config paths
@@ -49,6 +50,7 @@ Examples:
   ./install.sh -c gemini              Install for Gemini CLI (workspace)
   ./install.sh -c codex               Install for OpenAI Codex CLI (workspace)
   ./install.sh -c zed                 Install for Zed (global)
+  ./install.sh -c skill               Install as Claude Code skill (~/.claude/skills/)
   ./install.sh -c all                 Install for all detected clients
   ./install.sh --status               Show installation status
   ./install.sh --upgrade              Upgrade npm deps
@@ -91,7 +93,12 @@ if [[ "$GLOBAL_CONFIG" == true ]]; then
 fi
 
 get_version() {
-    node -e "const p=require('$APP_DIR/package.json'); console.log(p.version);" 2>/dev/null \
+    # Avoid node here — on Git Bash / MSYS the bash path style ("/f/...") isn't
+    # accepted by the native Windows node binary, so the require() throws and
+    # the function used to return "unknown".
+    grep -E '"version"\s*:' "$APP_DIR/package.json" 2>/dev/null \
+        | head -1 \
+        | sed -E 's/.*"version"\s*:\s*"([^"]+)".*/\1/' \
         || echo "unknown"
 }
 
@@ -586,6 +593,8 @@ install_client() {
             echo "  pi.dev uses TypeScript extensions and CLI tools instead."
             echo "  To use ChatGipite concepts in pi.dev, see: https://pi.dev/docs/extensions"
             echo "" ;;
+        skill)
+            install_skill ;;
         *)
             err "Unknown client: $client" ;;
     esac
@@ -646,9 +655,86 @@ uninstall_client() {
             cfg=$(get_goose_config_path)
             if [[ "$(_check_in_yaml "$cfg")" == "YES" ]]; then
                 remove_goose_config "$cfg" > /dev/null 2>&1; ok "Removed from Goose"; fi ;;
+        skill)
+            uninstall_skill ;;
         *)
             err "Unknown client: $client" ;;
     esac
+}
+
+# ── Skill install (Claude Code skills directory) ──────────
+is_windows_bash() {
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+install_skill() {
+    local skill_src="$APP_DIR/skill"
+    local skill_dest="$HOME/.claude/skills/chatgipite"
+    [[ -d "$skill_src" ]] || die "skill/ directory missing in $APP_DIR"
+    mkdir -p "$(dirname "$skill_dest")"
+    if [[ -L "$skill_dest" || -e "$skill_dest" ]]; then
+        info "Removing existing $skill_dest"
+        rm -rf "$skill_dest"
+    fi
+
+    if is_windows_bash; then
+        # Native ln -s under MSYS/Cygwin/Git-Bash without MSYS_WINSYMLINKS=1 makes
+        # a "fake" symlink (regular file) that Windows-side processes can't follow.
+        # Use a real Windows junction via mklink /J. We have to go through a temp
+        # .bat file because passing "/J" as an arg through `cmd //c` triggers
+        # MSYS path-mangling that corrupts the flag.
+        local win_src win_dest tmp_bat
+        win_src="$(cygpath -w "$skill_src")"
+        win_dest="$(cygpath -w "$skill_dest")"
+        tmp_bat="$(mktemp --suffix=.bat 2>/dev/null || mktemp -t mklink.XXXXXX.bat)"
+        cat > "$tmp_bat" <<EOF
+@echo off
+mklink /J "$win_dest" "$win_src"
+EOF
+        if cmd //c "$(cygpath -w "$tmp_bat")" >/dev/null 2>&1; then
+            ok "Skill installed (junction): $skill_dest -> $skill_src"
+        else
+            err "mklink /J failed. Try running install.bat from cmd.exe instead."
+            rm -f "$tmp_bat"
+            return 1
+        fi
+        rm -f "$tmp_bat"
+    else
+        ln -s "$skill_src" "$skill_dest"
+        ok "Skill installed: $skill_dest -> $skill_src"
+    fi
+    info "Set CHATGIPITE_HOME=$APP_DIR if you move the skill or repo."
+}
+
+uninstall_skill() {
+    local skill_dest="$HOME/.claude/skills/chatgipite"
+    [[ -L "$skill_dest" || -e "$skill_dest" ]] || return 0
+
+    if is_windows_bash; then
+        # Critical: never fall back to `rm -rf` on a Windows junction — depending
+        # on the MSYS version it may chase the link and delete the user's repo.
+        # Use rmdir from cmd, which removes the junction without traversing.
+        local win_dest tmp_bat
+        win_dest="$(cygpath -w "$skill_dest")"
+        tmp_bat="$(mktemp --suffix=.bat 2>/dev/null || mktemp -t rmdir.XXXXXX.bat)"
+        cat > "$tmp_bat" <<EOF
+@echo off
+rmdir "$win_dest"
+EOF
+        if cmd //c "$(cygpath -w "$tmp_bat")" >/dev/null 2>&1; then
+            ok "Removed skill: $skill_dest"
+        else
+            err "Could not remove $skill_dest. Delete it manually with: rmdir \"$win_dest\""
+        fi
+        rm -f "$tmp_bat"
+    else
+        # Unix symlink — rm directly is safe (does not follow into the target).
+        rm "$skill_dest"
+        ok "Removed skill: $skill_dest"
+    fi
 }
 
 # ── Show status ───────────────────────────────────────────
@@ -678,9 +764,23 @@ show_status() {
     local p s
     p="$(get_desktop_config_path)";   s=$(_check_in_json "$p"); _row "claudedesktop" "$s" "$p"
     p="$(get_code_config_path)";      s=$(_check_in_json "$p"); _row "claude (workspace)" "$s" "$p"
+
+    # Global Claude has two possible paths (~/.claude.json and ~/.claude/mcp.json).
+    # Collapse to a single row: report YES + the path where chatgipite actually
+    # lives, otherwise NO + the canonical default.
+    local global_yes_path=""
     while IFS= read -r gp; do
-        s=$(_check_in_json "$gp"); _row "claude (global)" "$s" "$gp"
+        if [[ -f "$gp" && "$(_check_in_json "$gp")" == "YES" ]]; then
+            global_yes_path="$gp"
+            break
+        fi
     done < <(get_global_code_config_paths)
+    if [[ -n "$global_yes_path" ]]; then
+        _row "claude (global)" "YES" "$global_yes_path"
+    else
+        _row "claude (global)" "NO" "$_gh/.claude.json"
+    fi
+
     p="$_ws/.cursor/mcp.json";        s=$(_check_in_json "$p"); _row "cursor (workspace)" "$s" "$p"
     p="$_gh/.cursor/mcp.json";        s=$(_check_in_json "$p"); _row "cursor (global)" "$s" "$p"
     p="$(get_windsurf_config_path)";  s=$(_check_in_json "$p"); _row "windsurf" "$s" "$p"
@@ -694,6 +794,14 @@ show_status() {
     p="$_ws/opencode.json";           s=$(_check_in_json "$p"); _row "opencode (workspace)" "$s" "$p"
     p="$_gh/.config/opencode/opencode.json"; s=$(_check_in_json "$p"); _row "opencode (global)" "$s" "$p"
     p="$(get_goose_config_path)";     s=$(_check_in_yaml "$p"); _row "goose" "$s" "$p"
+
+    # Skill mode: junction/symlink at ~/.claude/skills/chatgipite -> repo/skill
+    local skill_dest="$_gh/.claude/skills/chatgipite"
+    if [[ -L "$skill_dest" || -d "$skill_dest" ]]; then
+        _row "skill (Claude Code)" "YES" "$skill_dest"
+    else
+        _row "skill (Claude Code)" "NO" "$skill_dest"
+    fi
 
     echo "  ────────────────────────────────────────────────────────────────────────────"
     if [[ -n "$installed_version" ]]; then
@@ -714,7 +822,7 @@ echo "  Ang Chat bot ng mga Gipit"
 echo "  ─────────────────────────────────────"
 
 NODE_BIN=$(find_node) || die "Node.js 18+ not found. Install from https://nodejs.org"
-info "Node: $($NODE_BIN --version) at $NODE_BIN"
+info "Node: $("$NODE_BIN" --version) at $NODE_BIN"
 
 # ── Status path ───────────────────────────────────────────
 if [[ "$STATUS" == true ]]; then
@@ -727,7 +835,8 @@ if [[ "$UNINSTALL" == true ]]; then
     echo ""
     info "Uninstalling ChatGipite..."
     if [[ "$CLIENT" == "all" ]]; then
-        for c in claudedesktop claude cursor windsurf vscode gemini codex zed kilo opencode goose; do
+        # Uninstall covers skill too so users can fully reset.
+        for c in claudedesktop claude cursor windsurf vscode gemini codex zed kilo opencode goose skill; do
             uninstall_client "$c"
         done
     else
@@ -769,6 +878,8 @@ fi
 echo ""
 info "Configuring MCP client: $CLIENT"
 if [[ "$CLIENT" == "all" ]]; then
+    # Skill install is opt-in (-c skill). "all" = MCP clients only, so existing
+    # users running --upgrade -c all don't get a skill they didn't ask for.
     for c in claudedesktop claude cursor windsurf vscode gemini codex zed kilo opencode goose; do
         install_client "$c"
     done

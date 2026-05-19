@@ -9,7 +9,7 @@
           "sector": { "type": "string", "description": "Industry or sector (e.g. healthtech, edtech, fintech, SaaS, consumer)" },
           "problem": { "type": "string", "description": "A problem or pain point to build around" },
           "constraints": { "type": "string", "description": "Constraints like budget, solo founder, B2B only, no-code, etc." },
-          "count": { "type": "number", "description": "Number of ideas to generate (default: 1)" }
+          "count": { "type": "integer", "minimum": 1, "maximum": 10, "default": 1, "description": "Number of ideas to generate (1-10, default: 1)" }
         }
       }
     },
@@ -19,7 +19,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to validate" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to validate" },
           "context": { "type": "string", "description": "Additional context about the idea, target market, or constraints" }
         },
         "required": ["idea"]
@@ -31,7 +31,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to score" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to score" },
           "context": { "type": "string", "description": "Additional context" }
         },
         "required": ["idea"]
@@ -39,11 +39,56 @@
     },
     {
       "name": "biz_canvas",
-      "description": "Generate a complete Business Model Canvas (all 9 blocks) for a saved idea slug.",
+      "description": "Generate a strategy canvas for a saved idea. canvas_type selects: bmc (Business Model Canvas, default — for funded/operating), lean (Lean Canvas, Running Lean 3rd ed — for unproven ideas), vpc (Value Proposition Canvas — demand-side fit), mission (Mission Model Canvas — mission-driven/non-profit), ai-platform (AI Canvas + Platform Canvas — model-core or multi-sided).",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea (e.g. ai-meal-planning)" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea (lowercase letters, digits, hyphens only; e.g. ai-meal-planning)" },
+          "canvas_type": { "type": "string", "enum": ["bmc", "lean", "vpc", "mission", "ai-platform"], "default": "bmc", "description": "Which canvas to produce (default: bmc)" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_lean_canvas",
+      "description": "Lean Canvas (Running Lean 3rd ed): Problem (+Existing Alternatives) → Customer Segments (+Early Adopters) → UVP (+High-Level Concept) → Solution → Channels → Revenue → Cost → Key Metrics (Customer Factory) → Unfair Advantage. Best for unproven, pre-revenue ideas.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_value_prop",
+      "description": "Value Proposition Canvas: customer profile (jobs/pains/gains) mapped to value map (products/pain relievers/gain creators) per priority segment, plus a problem–solution fit assessment. Pulls personas if available.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_mission_canvas",
+      "description": "Mission Model Canvas: BMC variant for mission-driven, non-profit, or government ventures (beneficiaries, buy-in/support, deployment, mission budget, impact factors instead of revenue/profit).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_ai_canvas",
+      "description": "AI Canvas (prediction, judgment, action, outcome, input, training data, feedback loop) and/or Platform Canvas (sides, value unit, network effects, chicken-and-egg, governance) for model-core or multi-sided-market ideas.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -54,7 +99,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -65,20 +110,22 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "style": { "type": "string", "description": "Naming style: coined, descriptive, metaphor, acronym, portmanteau" },
-          "count": { "type": "number", "description": "Number of names to generate (default: 8)" }
+          "count": { "type": "integer", "minimum": 1, "maximum": 20, "default": 8, "description": "Number of names to generate (1-20, default: 8)" }
         },
         "required": ["idea_slug"]
       }
     },
     {
       "name": "biz_name_check",
-      "description": "Check availability of a business name: .com domain (DNS), Twitter/X handle, Instagram handle, LinkedIn company page.",
+      "description": "Check brand-name availability: domains via RDAP→WHOIS→DNS (default com,io,ai,co,app,dev,net,org) and social handles (X, Instagram, TikTok, LinkedIn, GitHub, YouTube, Facebook, Reddit, Threads).",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "description": "Business name to check (e.g. NutriAI, Validea)" }
+          "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Business name to check (e.g. NutriAI, Validea)" },
+          "tlds": { "type": "array", "items": { "type": "string" }, "description": "TLDs to check without dots (e.g. [\"com\",\"io\",\"ai\"]). Defaults to com,io,ai,co,app,dev,net,org." },
+          "socials": { "type": "array", "items": { "type": "string" }, "description": "Socials to check: x, instagram, tiktok, linkedin, github, youtube, facebook, reddit, threads, or [\"all\"]. Defaults to all." }
         },
         "required": ["name"]
       }
@@ -89,7 +136,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
         },
         "required": ["idea_slug"]
@@ -101,7 +148,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "assumptions": {
             "type": "object",
             "description": "Override assumptions",
@@ -123,7 +170,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -134,7 +181,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to fully analyze" },
           "sector": { "type": "string", "description": "Optional sector context" },
           "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
         },
@@ -147,7 +194,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "geography": { "type": "string", "description": "Geographic scope (e.g. US, Global, APAC, Europe)" }
         },
         "required": ["idea_slug"]
@@ -159,7 +206,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "segment_focus": { "type": "string", "description": "Optional: focus on a specific segment (e.g. SMB, enterprise, consumers)" }
         },
         "required": ["idea_slug"]
@@ -171,8 +218,8 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
-          "horizon": { "type": "string", "description": "Analysis horizon: 1yr, 3yr, or 5yr (default: 3yr)" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
+          "horizon": { "type": "string", "enum": ["1yr", "3yr", "5yr"], "default": "3yr", "description": "Analysis horizon (default: 3yr)" }
         },
         "required": ["idea_slug"]
       }
@@ -183,7 +230,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -194,7 +241,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "model_preference": { "type": "string", "description": "Optional pricing model preference (e.g. usage-based, seat-based, freemium)" }
         },
         "required": ["idea_slug"]
@@ -206,7 +253,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "stage": { "type": "string", "description": "Current stage: pre-launch, launched, or scaling" }
         },
         "required": ["idea_slug"]
@@ -218,7 +265,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "persona": { "type": "string", "description": "Optional: focus on a specific persona (references personas artifact if available)" }
         },
         "required": ["idea_slug"]
@@ -230,7 +277,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "market": { "type": "string", "description": "Optional market focus (e.g. US, APAC, SMB, enterprise)" }
         },
         "required": ["idea_slug"]
@@ -242,7 +289,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "assumptions": {
             "type": "object",
             "description": "Override base-case assumptions",
@@ -264,7 +311,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -275,7 +322,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" },
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" },
           "target_markets": { "type": "string", "description": "Optional: specific markets to analyze (e.g. EU, APAC, LATAM)" }
         },
         "required": ["idea_slug"]
@@ -287,7 +334,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea_slug": { "type": "string", "description": "Slug of the saved idea" }
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
         },
         "required": ["idea_slug"]
       }
@@ -298,7 +345,89 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "idea": { "type": "string", "description": "The business idea to fully analyze" },
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to fully analyze" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_north_star",
+      "description": "Define one North Star Metric (customer-value, not vanity) plus its input model, Customer Factory leading indicators, and anti-gaming guardrails for a saved idea.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_rice_score",
+      "description": "Compute a RICE prioritization score (Reach × Impact × Confidence / Effort) with rationale per input and a verdict vs a typical alternative. Complements biz_ice_score for portfolio/roadmap calls.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea or initiative to score" },
+          "context": { "type": "string", "description": "Additional context (reach data, alternatives, constraints)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_assumptions",
+      "description": "Rank the riskiest (most fatal × most uncertain) assumptions and produce a Test Card (hypothesis, cheapest experiment, metric, numeric pass threshold, timebox) for a saved idea.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_prfaq",
+      "description": "Amazon Working-Backwards: a launch press release + internal/customer FAQ written before building, to force clarity on customer and value.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_mvp",
+      "description": "Scope the smallest MVP (concierge / wizard-of-oz / fake-door / single-feature / manual-first) that tests the riskiest assumption, with in-scope vs cut and a numeric success metric.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of the saved idea" }
+        },
+        "required": ["idea_slug"]
+      }
+    },
+    {
+      "name": "biz_incubate",
+      "description": "Incubation pipeline: validate → assumptions/Test Card → Lean Canvas + Value Proposition Canvas + North Star (parallel) → MVP scope → pivot/persevere decision. Saves 7 artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to incubate" },
+          "sector": { "type": "string", "description": "Optional sector context" },
+          "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
+        },
+        "required": ["idea"]
+      }
+    },
+    {
+      "name": "biz_launch_sprint",
+      "description": "Working-Backwards launch sprint: validate → PR/FAQ → MVP scope → GTM → launch checklist. Saves 5 artifacts to ideas/{slug}/.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea": { "type": "string", "minLength": 3, "description": "The business idea to take to launch" },
           "sector": { "type": "string", "description": "Optional sector context" },
           "constraints": { "type": "string", "description": "Optional constraints (solo founder, bootstrapped, etc.)" }
         },
@@ -311,8 +440,8 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "query": { "type": "string", "description": "Search query" },
-          "limit": { "type": "number", "description": "Max results (default: 10)" },
+          "query": { "type": "string", "minLength": 1, "description": "Search query" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "Max results (1-50, default: 10)" },
           "type": { "type": "string", "description": "Filter by type: ideas, validations, financials, playbooks, names, tam, personas, trends, swot, pricing, gtm, journey, landscape, model, risks, expansion, synthesis" }
         },
         "required": ["query"]

@@ -2,10 +2,9 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
+import { dispatch } from '../lib/llm-adapter.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
 const date = process.argv[2] || new Date().toISOString().split('T')[0];
 const dir = path.join(__dirname, 'results', date);
@@ -15,14 +14,6 @@ if (!fs.existsSync(dir)) {
 }
 
 const summary = JSON.parse(fs.readFileSync(path.join(dir, 'summary.json'), 'utf-8'));
-const apiKey = process.env.ANTHROPIC_API_KEY;
-if (!apiKey) {
-  console.error('ANTHROPIC_API_KEY not set — judge needs an API key.');
-  process.exit(1);
-}
-
-const Anthropic = require('@anthropic-ai/sdk');
-const client = new Anthropic.Anthropic({ apiKey });
 
 // The two comparisons that answer different questions:
 //  • b vs a       — does Phase 2 (tightened prompts) hold quality vs pre-Phase-2?
@@ -71,16 +62,12 @@ for (const [key, vmap] of groups) {
 
     process.stderr.write(`▶ ${sample} / ${agent} / ${cmp.label}…\n`);
     try {
-      const resp = await client.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
-        system: RUBRIC(cmp.left, cmp.right),
-        messages: [{
-          role: 'user',
-          content: `### Output L (${cmp.left})\n\n${lText}\n\n---\n\n### Output R (${cmp.right})\n\n${rText}\n\nReturn only the JSON object.`,
-        }],
-      });
-      const text = resp.content.find((c) => c.type === 'text')?.text || '';
+      const text = await dispatch(
+        'judge',
+        RUBRIC(cmp.left, cmp.right),
+        `### Output L (${cmp.left})\n\n${lText}\n\n---\n\n### Output R (${cmp.right})\n\n${rText}\n\nReturn only the JSON object.`,
+        '',
+      );
       const json = JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] ?? '{}');
       // Translate L/R back to actual variant names so the report is readable.
       const winner =

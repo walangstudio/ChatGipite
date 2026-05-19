@@ -20,6 +20,7 @@ All notable changes to ChatGipite are documented here. Format follows [Keep a Ch
 ### Changed
 - `biz_name_check` / `biz_name` result shape: `domain` (single) → `domains` (array, one per TLD). Output tables widened.
 - `config/providers.yaml` NVIDIA example model corrected to a verified id (`qwen/qwen3.5-122b-a10b`); the old `qwen/qwen3.5-397b-a17b` did not exist.
+- `tests/judge.mjs` now uses the shared provider adapter instead of a hardcoded Anthropic client, so the A/B harness runs on any configured provider (no longer requires `ANTHROPIC_API_KEY`). Consistent with `tests/run-ab.mjs`.
 - **BMC modernized + reassigned**: moved off the generic `writer` agent to `canvas-strategist`; pulls personas/pricing/financials and adds defensibility + cross-checks. `writer` now owns the pitch deck only.
 
 ## [0.3.0] - 2026-05-08

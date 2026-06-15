@@ -2,6 +2,15 @@
 
 All notable changes to ChatGipite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-06-15
+
+### Added
+- **Engagement-ethics specialist** (`biz_engagement` + `engagement-ethicist` agent + `knowledge/engagement-ethics.md`): audits a new or existing product for addictive/abusive engagement patterns (infinite scroll, slot-machine/variable rewards, streak-loss guilt, manipulative notifications, fake urgency, roach-motel cancellation, confirmshaming, engagement-max feeds) with the detection tell + severity, flags **regulatory exposure** (FTC *Bringing Dark Patterns to Light* 2022, EU DSA Art. 25, California CPPA), runs the regret / transparency / exit / metric ethics tests, then prescribes **humane engagement & retention** via a dark-pattern→ethical rewrite playbook. `mode`: audit (warn only) | apply (recommendations) | full. Accepts `idea_slug` OR raw `product`.
+- **Cited knowledge base** `knowledge/engagement-ethics.md`: a durable, sourced reference (addiction mechanisms, abuse-pattern catalog + detection heuristics, engagement-vs-manipulation litmus tests, ethical-design frameworks — Humane by Design / CHT / IEEE EAD / Octalysis, ethical technique catalog, rewrite playbook, regulatory map). Loaded into the agent's context so its findings are grounded and citable; contested/population-level claims flagged. New `knowledge/` directory + `readKnowledge()` helper.
+
+### Changed
+- 40 tools total (was 39). `biz_engagement` is standalone (not in deep_run); it complements the broader `product-psychologist` density audit with a deeper addiction/regulatory/retention specialist.
+
 ## [0.5.0] - 2026-06-15
 
 ### Added

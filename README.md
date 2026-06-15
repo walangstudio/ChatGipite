@@ -2,7 +2,7 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-![version](https://img.shields.io/badge/version-0.5.0-blue)
+![version](https://img.shields.io/badge/version-0.6.0-blue)
 ![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -242,6 +242,7 @@ These accept either `idea_slug` (a saved idea) **or** `product` (raw text for a 
 | `biz_perspectives` | 6 independent blind lenses (contrarian, customer, operator, investor, regulator, futurist) run in parallel + a reviewer reconciling agreements / conflicts / blind-spots into a net verdict |
 | `biz_product_psych` | Product/UX behavioral design (Fogg B=MAP, Hook, friction, peak-end) + technique-density audit (under-leveraged / balanced / over-engineered) + dark-pattern flags. `mode`: apply / audit / full |
 | `biz_marketing_psych` | Persuasion / conversion psychology (Cialdini 7, loss aversion, anchoring, decoy) + technique-density audit + dark-pattern flags. `mode`: apply / audit / full |
+| `biz_engagement` | App-addiction specialist: detects abusive/addictive patterns (infinite scroll, slot-machine rewards, streak guilt, manipulative notifications, fake urgency, roach-motel cancel) with severity + regulatory exposure (FTC / EU DSA Art.25 / CPPA), runs regret/transparency/exit ethics tests, then prescribes humane engagement + retention (rewrite playbook). Grounded in a cited knowledge base. `mode`: audit / apply / full |
 
 ### Pipelines
 | Tool | Output |

@@ -1,6 +1,6 @@
 ---
 name: deep-analysis
-description: Full 15-step deep strategic analysis pipeline
+description: Full 24-step deep strategic analysis pipeline (functional analysis + perspective panel + psychology audits)
 steps:
   - id: validate
     agent: validator
@@ -112,6 +112,78 @@ steps:
       - market
     output_path: "ideas/{{slug}}/expansion.md"
 
+  - id: contrarian
+    agent: lens-contrarian
+    task: "Analyze ONLY from the contrarian / pre-mortem lens. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-contrarian.md"
+
+  - id: customer
+    agent: lens-customer
+    task: "Analyze ONLY from the skeptical-buyer lens, at the purchase moment. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-customer.md"
+
+  - id: operator
+    agent: lens-operator
+    task: "Analyze ONLY from the operator lens — daily operational reality. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-operator.md"
+
+  - id: investor
+    agent: lens-investor
+    task: "Analyze ONLY from the investor lens — returns, ownership, fundability. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-investor.md"
+
+  - id: regulator
+    agent: lens-regulator
+    task: "Analyze ONLY from the regulator / ethics / harm lens. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-regulator.md"
+
+  - id: futurist
+    agent: lens-futurist
+    task: "Analyze ONLY from the 5-year futurist lens — second-order effects. Subject: {{goal}}. Constraints: {{params.constraints}}"
+    depends_on:
+      - validate
+    output_path: "ideas/{{slug}}/lens-futurist.md"
+
+  - id: panel_review
+    agent: perspective-reviewer
+    task: "Reconcile all six independent lenses into one panel review for: {{goal}}. Surface agreements, conflicts, and blind spots; give a net verdict."
+    depends_on:
+      - contrarian
+      - customer
+      - operator
+      - investor
+      - regulator
+      - futurist
+    output_path: "ideas/{{slug}}/perspective-review.md"
+
+  - id: product_psych
+    agent: product-psychologist
+    task: "Mode: full. Apply product/UX behavioral-design frameworks and run the technique-density audit for: {{goal}}."
+    depends_on:
+      - validate
+      - personas
+      - journey
+    output_path: "ideas/{{slug}}/product-psychology.md"
+
+  - id: marketing_psych
+    agent: marketing-psychologist
+    task: "Mode: full. Apply persuasion / behavioral-economics frameworks and run the technique-density audit for: {{goal}}."
+    depends_on:
+      - validate
+      - personas
+      - market
+    output_path: "ideas/{{slug}}/marketing-psychology.md"
+
   - id: synthesis
     agent: executive-advisor
     task: "Synthesize all available analysis into a board-level executive brief with conviction score and strategic recommendation for: {{goal}}."
@@ -130,12 +202,15 @@ steps:
       - risks
       - landscape
       - expansion
+      - panel_review
+      - product_psych
+      - marketing_psych
     output_path: "ideas/{{slug}}/synthesis.md"
 ---
 
 # Deep Analysis Workflow
 
-Full 15-step strategic analysis pipeline:
+Full 24-step strategic analysis pipeline:
 
 1. **Validate**: viability, ICP, ICE score
 2. **Personas**: JTBD-framed segments, ICP priority, WTP
@@ -151,6 +226,10 @@ Full 15-step strategic analysis pipeline:
 12. **Risks**: risk register, scenarios, regulatory flags
 13. **Landscape**: deep competitive intelligence, moats, white space
 14. **Expansion**: market entry modes, phased roadmap, go/no-go criteria
-15. **Synthesis**: executive brief, conviction score, 5 key decisions
+15-20. **Perspective lenses** (blind, parallel): contrarian, customer, operator, investor, regulator, futurist
+21. **Panel review**: reconcile the six lenses — agreements, conflicts, blind spots, net verdict
+22. **Product psychology**: behavioral-design frameworks + technique-density audit
+23. **Marketing psychology**: persuasion frameworks + technique-density audit
+24. **Synthesis**: executive brief, conviction score, 5 key decisions (ingests panel + psychology)
 
 All artifacts saved to `ideas/{slug}/`.

@@ -45,6 +45,14 @@ The script auto-detects the ChatGipite installation via `CHATGIPITE_HOME` env va
 - `biz_expansion` — `{"idea_slug", "target_markets"?}` → entry mode + 3-phase roadmap
 - `biz_synthesis` — `{"idea_slug"}` → board-level executive brief from all artifacts
 - `biz_north_star` — `{"idea_slug"}` → North Star metric + input model + guardrails
+
+## Perspectives & psychology (idea_slug OR raw product)
+
+These accept EITHER `idea_slug` (a saved idea) OR `product` (raw text for a new/existing product) — pass one.
+
+- `biz_perspectives` — `{"idea_slug"|"product", "constraints"?}` → 6 blind lenses (contrarian, customer, operator, investor, regulator, futurist) in parallel + a reviewer that reconciles agreements/conflicts/blind-spots. Runs 7 dispatches.
+- `biz_product_psych` — `{"idea_slug"|"product", "mode"?:"apply|audit|full"}` → product/UX behavioral design (Fogg, Hook, friction, peak-end) + technique-density audit (under-leveraged / balanced / over-engineered) + dark-pattern flags
+- `biz_marketing_psych` — `{"idea_slug"|"product", "mode"?:"apply|audit|full"}` → persuasion/conversion (Cialdini, loss aversion, anchoring) + technique-density audit + dark-pattern flags
 - `biz_rice_score` — `{"idea", "context"?}` → RICE prioritization score
 - `biz_assumptions` — `{"idea_slug"}` → riskiest-assumption map + Test Card
 - `biz_prfaq` — `{"idea_slug"}` → Working-Backwards press release + FAQ
@@ -58,7 +66,7 @@ The script auto-detects the ChatGipite installation via `CHATGIPITE_HOME` env va
 ## Pipelines (run multiple agents)
 
 - `biz_full_run` — `{"idea", "sector"?, "constraints"?}` → 6-step (validate → competitors → financials → canvas → pitchdeck → playbook) + names. Slow.
-- `biz_deep_run` — `{"idea", "sector"?, "constraints"?}` → 15-step deep analysis + synthesis. Very slow.
+- `biz_deep_run` — `{"idea", "sector"?, "constraints"?}` → 24-step deep analysis (functional + 6 perspective lenses + panel review + product/marketing psychology) + synthesis. Very slow.
 - `biz_incubate` — `{"idea", "sector"?, "constraints"?}` → validate → assumptions → lean+vpc+north-star → MVP → pivot/persevere. Fast-launch loop.
 - `biz_launch_sprint` — `{"idea", "sector"?, "constraints"?}` → validate → PR/FAQ → MVP → GTM → launch checklist.
 

@@ -14,6 +14,11 @@
       "slug": "podcaster-automation",
       "idea": "Workflow automation tool for indie podcasters",
       "context": "Target: solo podcasters with 50-5000 weekly listeners managing edits, show notes, distribution, and sponsor invoicing manually. Sweet spot: 1-3 episodes per week."
+    },
+    {
+      "slug": "existing-habit-app",
+      "idea": "A live habit-tracking app with daily streak nags, countdown timers, a leaderboard, scarcity-framed annual upsells, and a paywall after day 3",
+      "context": "Existing product. Audit the in-product engagement mechanics and the conversion funnel for over- or under-use of psychological techniques."
     }
   ],
   "agents": [
@@ -40,6 +45,26 @@
     {
       "id": "competitive-intelligence",
       "task_template": "Produce a deep competitive intelligence analysis with funding trajectories, moat assessment, white-space map, and positioning grid for: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "lens-contrarian",
+      "task_template": "Analyze ONLY from the contrarian / pre-mortem lens. Subject: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "perspective-reviewer",
+      "task_template": "Reconcile the perspective lenses into one panel review for: \"{idea}\". Surface agreements, conflicts, and blind spots; give a net verdict. Context: {context}"
+    },
+    {
+      "id": "product-psychologist",
+      "task_template": "Mode: full. Apply product/UX behavioral-design frameworks and run the technique-density audit for: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "marketing-psychologist",
+      "task_template": "Mode: full. Apply persuasion / behavioral-economics frameworks and run the technique-density audit for: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "engagement-ethicist",
+      "task_template": "Mode: full. Audit for addictive/abusive engagement patterns (warn with severity + regulatory exposure) and prescribe ethical engagement/retention for: \"{idea}\". Context: {context}"
     }
   ]
 }

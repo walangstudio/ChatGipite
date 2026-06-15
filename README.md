@@ -2,7 +2,7 @@
 
 > *"Ang Chat bot ng mga Gipit"*
 
-![version](https://img.shields.io/badge/version-0.4.0-blue)
+![version](https://img.shields.io/badge/version-0.6.0-blue)
 ![node](https://img.shields.io/badge/node-20%2B-339933?logo=node.js&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-compatible-blueviolet)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
@@ -234,11 +234,21 @@ On Windows, use `C:\absolute\path\to\ChatGipite\server.js`. Restart the client a
 | `biz_prfaq` | Working-Backwards press release + internal/customer FAQ |
 | `biz_mvp` | Smallest MVP scope to test the riskiest assumption |
 
+### Perspectives & psychology
+These accept either `idea_slug` (a saved idea) **or** `product` (raw text for a new/existing product).
+
+| Tool | Output |
+|------|--------|
+| `biz_perspectives` | 6 independent blind lenses (contrarian, customer, operator, investor, regulator, futurist) run in parallel + a reviewer reconciling agreements / conflicts / blind-spots into a net verdict |
+| `biz_product_psych` | Product/UX behavioral design (Fogg B=MAP, Hook, friction, peak-end) + technique-density audit (under-leveraged / balanced / over-engineered) + dark-pattern flags. `mode`: apply / audit / full |
+| `biz_marketing_psych` | Persuasion / conversion psychology (Cialdini 7, loss aversion, anchoring, decoy) + technique-density audit + dark-pattern flags. `mode`: apply / audit / full |
+| `biz_engagement` | App-addiction specialist: detects abusive/addictive patterns (infinite scroll, slot-machine rewards, streak guilt, manipulative notifications, fake urgency, roach-motel cancel) with severity + regulatory exposure (FTC / EU DSA Art.25 / CPPA), runs regret/transparency/exit ethics tests, then prescribes humane engagement + retention (rewrite playbook). Grounded in a cited knowledge base. `mode`: audit / apply / full |
+
 ### Pipelines
 | Tool | Output |
 |------|--------|
 | `biz_full_run` | 7-step pipeline: validate → competitors → financials → canvas → pitchdeck → playbook → names |
-| `biz_deep_run` | 15-step workflow + names: validate → personas → trends → market → TAM → financials → model → SWOT → pricing → GTM → journey → risks → landscape → expansion → synthesis → names |
+| `biz_deep_run` | 24-step workflow + names: functional analysis (validate → personas → trends → market → TAM → financials → model → SWOT → pricing → GTM → journey → risks → landscape → expansion) + 6 perspective lenses → panel review + product/marketing psychology → synthesis → names |
 | `biz_incubate` | Incubation loop: validate → assumptions → lean canvas + value-prop + north star → MVP → pivot/persevere decision |
 | `biz_launch_sprint` | Working-Backwards launch: validate → PR/FAQ → MVP → GTM → launch checklist |
 | `biz_recall` | Full-text search across all stored analyses |
@@ -260,7 +270,7 @@ biz_playbook    {idea_slug: "ai-triage-assistant-for-rural-clinics"}
 Full pipeline in one call:
 ```
 biz_full_run      {idea: "AI triage assistant for rural clinics"}
-biz_deep_run      {idea: "AI triage assistant for rural clinics"}   ← deep version (15 steps, ~16 artifacts)
+biz_deep_run      {idea: "AI triage assistant for rural clinics"}   ← deep version (24 steps, ~25 artifacts)
 biz_incubate      {idea: "AI triage assistant for rural clinics"}   ← lean incubation loop (7 artifacts)
 biz_launch_sprint {idea: "AI triage assistant for rural clinics"}   ← Working-Backwards launch (5 artifacts)
 ```
@@ -296,6 +306,10 @@ All of the above, plus:
 | `risks.md` | Risk register and scenarios |
 | `landscape.md` | Deep competitive intelligence |
 | `expansion.md` | Market entry and expansion roadmap |
+| `lens-*.md` | Six perspective lenses (contrarian, customer, operator, investor, regulator, futurist) |
+| `perspective-review.md` | Reconciled panel review: agreements, conflicts, blind spots, net verdict |
+| `product-psychology.md` | Product/UX behavioral-design audit + technique density |
+| `marketing-psychology.md` | Persuasion/conversion audit + technique density |
 | `synthesis.md` | Executive brief with conviction score |
 
 ## Configuration

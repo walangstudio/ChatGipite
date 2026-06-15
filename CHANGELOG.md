@@ -2,6 +2,27 @@
 
 All notable changes to ChatGipite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-06-15
+
+### Added
+- **Engagement-ethics specialist** (`biz_engagement` + `engagement-ethicist` agent + `knowledge/engagement-ethics.md`): audits a new or existing product for addictive/abusive engagement patterns (infinite scroll, slot-machine/variable rewards, streak-loss guilt, manipulative notifications, fake urgency, roach-motel cancellation, confirmshaming, engagement-max feeds) with the detection tell + severity, flags **regulatory exposure** (FTC *Bringing Dark Patterns to Light* 2022, EU DSA Art. 25, California CPPA), runs the regret / transparency / exit / metric ethics tests, then prescribes **humane engagement & retention** via a dark-pattern→ethical rewrite playbook. `mode`: audit (warn only) | apply (recommendations) | full. Accepts `idea_slug` OR raw `product`.
+- **Cited knowledge base** `knowledge/engagement-ethics.md`: a durable, sourced reference (addiction mechanisms, abuse-pattern catalog + detection heuristics, engagement-vs-manipulation litmus tests, ethical-design frameworks — Humane by Design / CHT / IEEE EAD / Octalysis, ethical technique catalog, rewrite playbook, regulatory map). Loaded into the agent's context so its findings are grounded and citable; contested/population-level claims flagged. New `knowledge/` directory + `readKnowledge()` helper.
+
+### Changed
+- 40 tools total (was 39). `biz_engagement` is standalone (not in deep_run); it complements the broader `product-psychologist` density audit with a deeper addiction/regulatory/retention specialist.
+
+## [0.5.0] - 2026-06-15
+
+### Added
+- **Multi-perspective lens analysis** (`biz_perspectives` + `workflows/perspectives.md`): analyze an idea or product through 6 independent, uncontaminated lenses run in parallel — `lens-contrarian`, `lens-customer`, `lens-operator`, `lens-investor`, `lens-regulator`, `lens-futurist` — then `perspective-reviewer` reconciles them into agreements, conflicts (surfaced, not averaged), blind spots, and a net verdict. Independence is by construction: no lens sees another, so the panel avoids groupthink.
+- **Product & marketing psychology** (`biz_product_psych` + `product-psychologist`, `biz_marketing_psych` + `marketing-psychologist`): apply behavioral-science frameworks (Fogg B=MAP, Hook, friction, peak-end / Cialdini 7, loss aversion, anchoring, decoy) AND audit technique **density** — flagging over-engineered (manipulation, cognitive overload, dark patterns) vs under-leveraged (no activation hook, weak conversion). Density verdict scale + dark-pattern/ethics flags with required ethical alternatives. `mode`: apply | audit | full.
+- **Raw-product input**: `biz_perspectives` / `biz_product_psych` / `biz_marketing_psych` accept either a saved `idea_slug` OR raw `product` text (new or existing product), via a shared `resolveSubject()` helper that persists the subject so artifacts, memory, and `biz_recall` keep working.
+
+### Changed
+- **`biz_deep_run` is now 24 steps**: the perspective panel (6 lenses + reviewer) and both psychology audits are folded into `workflows/deep-analysis.md`, feeding the executive synthesis.
+- **`executive-advisor` synthesis** ingests `perspective-review.md`, `product-psychology.md`, and `marketing-psychology.md` when present, folding the panel verdict and density verdict into the conviction score and flagging dark patterns as risks. `biz_synthesis` reads the same new artifacts.
+- 39 tools total (was 36).
+
 ## [0.4.0] - 2026-05-20
 
 ### Added

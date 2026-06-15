@@ -376,6 +376,18 @@
       }
     },
     {
+      "name": "biz_engagement",
+      "description": "Engagement-ethics specialist: audits a NEW or EXISTING product for addictive/abusive patterns (infinite scroll, slot-machine rewards, streak guilt, manipulative notifications, fake urgency, roach-motel cancellation, etc.) with severity + regulatory exposure (FTC / EU DSA Art.25 / CPPA), runs the regret/transparency/exit ethics tests, then prescribes humane engagement & retention (rewrite playbook). Grounded in a cited knowledge base. Pass idea_slug OR product. mode: audit (warn only) | apply (ethical recommendations) | full (default).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "idea_slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "minLength": 1, "maxLength": 80, "description": "Slug of a saved idea (use this OR product)" },
+          "product": { "type": "string", "minLength": 3, "maxLength": 8000, "description": "Raw description of a NEW or EXISTING product/app (use this OR idea_slug)" },
+          "mode": { "type": "string", "enum": ["audit", "apply", "full"], "default": "full", "description": "audit = abuse detection + warnings only; apply = ethical engagement/retention recommendations only; full = both" }
+        }
+      }
+    },
+    {
       "name": "biz_deep_run",
       "description": "Full deep-analysis pipeline (24-step workflow + names): validate → personas/trends/market/financials → tam/model/swot/pricing/journey/risks/landscape → 6 perspective lenses + panel review + product/marketing psychology → gtm → expansion → synthesis → names. Saves 25 artifacts to ideas/{slug}/.",
       "inputSchema": {

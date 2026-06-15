@@ -61,6 +61,10 @@
     {
       "id": "marketing-psychologist",
       "task_template": "Mode: full. Apply persuasion / behavioral-economics frameworks and run the technique-density audit for: \"{idea}\". Context: {context}"
+    },
+    {
+      "id": "engagement-ethicist",
+      "task_template": "Mode: full. Audit for addictive/abusive engagement patterns (warn with severity + regulatory exposure) and prescribe ethical engagement/retention for: \"{idea}\". Context: {context}"
     }
   ]
 }

@@ -53,6 +53,7 @@ These accept EITHER `idea_slug` (a saved idea) OR `product` (raw text for a new/
 - `biz_perspectives` — `{"idea_slug"|"product", "constraints"?}` → 6 blind lenses (contrarian, customer, operator, investor, regulator, futurist) in parallel + a reviewer that reconciles agreements/conflicts/blind-spots. Runs 7 dispatches.
 - `biz_product_psych` — `{"idea_slug"|"product", "mode"?:"apply|audit|full"}` → product/UX behavioral design (Fogg, Hook, friction, peak-end) + technique-density audit (under-leveraged / balanced / over-engineered) + dark-pattern flags
 - `biz_marketing_psych` — `{"idea_slug"|"product", "mode"?:"apply|audit|full"}` → persuasion/conversion (Cialdini, loss aversion, anchoring) + technique-density audit + dark-pattern flags
+- `biz_engagement` — `{"idea_slug"|"product", "mode"?:"audit|apply|full"}` → app-addiction specialist: detects abusive/addictive patterns (infinite scroll, slot-machine rewards, streak guilt, manipulative notifications, fake urgency, roach-motel cancel) with severity + regulatory exposure (FTC/EU DSA/CPPA), runs regret/transparency/exit tests, then prescribes humane engagement + retention. Grounded in `knowledge/engagement-ethics.md`
 - `biz_rice_score` — `{"idea", "context"?}` → RICE prioritization score
 - `biz_assumptions` — `{"idea_slug"}` → riskiest-assumption map + Test Card
 - `biz_prfaq` — `{"idea_slug"}` → Working-Backwards press release + FAQ

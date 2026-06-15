@@ -36,6 +36,7 @@ What this business is, why now, the central bet, the single biggest risk. Write 
 - Aligned findings (2-3, high-confidence conclusions appearing across multiple analyses)
 - Conflicts (contradictions between analyses — surface, don't average away)
 - Biggest blind spot (the one unknown that would change the call)
+- Panel & psychology (if a perspective review and/or psychology audits are present): fold the panel's net verdict and the density verdict (over-/under-engineered) into the conviction score, and flag any panel conflict or dark-pattern as a risk.
 
 ## 90-Day Roadmap (week-level)
 | Week | Priority | Owner | Success Signal |

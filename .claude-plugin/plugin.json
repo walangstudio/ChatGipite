@@ -1,0 +1,22 @@
+{
+  "name": "chatgipite",
+  "description": "Business idea generation, validation, and execution planning. 40 MCP tools covering idea scoring, canvases, financials, competitive analysis, pitch decks, and go-to-market strategy — all stored locally per idea.",
+  "version": "0.6.0",
+  "author": {
+    "name": "scr1p7k177y",
+    "email": "scriptkitty@walang.studio"
+  },
+  "homepage": "https://github.com/walangstudio/ChatGipite",
+  "repository": "https://github.com/walangstudio/ChatGipite",
+  "license": "MIT",
+  "keywords": [
+    "business",
+    "startup",
+    "idea-validation",
+    "mcp",
+    "finance",
+    "go-to-market",
+    "pitch-deck",
+    "competitive-analysis"
+  ]
+}

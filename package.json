@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "test": "node --test tests/unit.test.mjs",
     "check-name": "node scripts/check-name.mjs",
     "update-wmn": "node scripts/update-wmn.mjs",
     "test:ab": "node tests/run-ab.mjs",

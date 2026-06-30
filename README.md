@@ -10,6 +10,8 @@
 
 Business idea generation, validation, and execution planning as an MCP server. Runs a full pipeline from raw idea to financial model, pitch deck, and go-to-market playbook — all stored locally per idea.
 
+**Prerequisite:** Node.js 20+ and `npm install` (or `npx chatgipite` for one-shot use without a local clone).
+
 ## Claude Code: install as a skill (recommended)
 
 Skills load on demand — ~50 tokens of overhead until invoked, vs ~5–8K for the full MCP server. For Claude Code users, this is the lightest option.

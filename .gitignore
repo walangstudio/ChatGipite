@@ -39,3 +39,5 @@ Thumbs.db
 
 # Temp files written by install.bat
 chatgipite_*.js
+CLAUDE.md
+.claude/
